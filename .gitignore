@@ -81,6 +81,7 @@ target/
 profile_default/
 ipython_config.py
 auth.py
+api_token.py
 
 # pyenv
 .python-version

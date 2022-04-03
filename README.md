@@ -1,5 +1,5 @@
 
-# Gamma <img src="https://github.com/MatejRojec/Gamma/blob/main/logo.jpg" width="100" height="100">
+#  <img src="https://github.com/MatejRojec/Gamma/blob/main/logo.jpg" width="20" height="20"> Gamma
 Projekt pri predmetu osnove podatkovnih baz. 
 
 

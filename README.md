@@ -1,6 +1,5 @@
-![This is an image](https://github.com/MatejRojec/Gamma/blob/main/logo.jpg)
-# Gamma
-![test image size]<img src="https://github.com/MatejRojec/Gamma/blob/main/logo.jpg" width="100" height="100">
+
+# Gamma <img src="https://github.com/MatejRojec/Gamma/blob/main/logo.jpg" width="100" height="100">
 Projekt pri predmetu osnove podatkovnih baz. 
 
 

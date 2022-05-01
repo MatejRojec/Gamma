@@ -49,5 +49,6 @@ CREATE TABLE tip_narocila (
 CREATE TABLE devizni_tecaj (
     osnovna_valuta TEXT,
     kotirajoca_valuta TEXT,
-    valutno_razmerje DOUBLE PRECISION NOT NULL
+    valutno_razmerje DOUBLE PRECISION NOT NULL,
+    datum_razmerja DATE NOT NULL
 );

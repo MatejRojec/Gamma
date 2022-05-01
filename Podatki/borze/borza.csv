@@ -1,0 +1,101 @@
+id_borze,ime,vrsta,lokacija,povezava
+binance,Binance,CeEx,Malta,https://www.binance.com/
+ftx,FTX,CeEx,Antigua and Barbuda,https://ftx.com/
+cryptomkt,CryptoMarket,CeEx,Chile,https://www.cryptomkt.com/
+gdax,Coinbase Exchange,CeEx,United States,https://www.coinbase.com/
+gateio,Gate.io,CeEx,Cayman Islands,https://www.gate.io/
+lbank,Lbank,CeEx,China,https://www.lbank.info/
+uniswapv3,Uniswap V3 (Ethereum),DeEx,United States,https://uniswap.org
+bitmex,BitMEX,CeEx,Seychelles,https://www.bitmex.com/
+curve,Curve Finance,DeEx,Switzerland,https://curve.fi/
+kraken,Kraken,CeEx,United States,https://www.kraken.com/
+pancakeswapv2,PancakeSwap V2,DeEx,Japan,https://pancakeswap.finance
+deversifi,DeversiFi,DeEx,British Virgin Islands,https://www.deversifi.com/
+phemex,Phemex,CeEx,Singapore,https://phemex.com/
+bitflyer,bitFlyer,CeEx,Japan,https://bitflyer.com/
+probit,ProBit,CeEx,Seychelles,https://www.probit.com
+bitstamp,Bitstamp,CeEx,Luxembourg,https://www.bitstamp.net/
+uniswapv2,Uniswap V2,DeEx,United States,https://uniswap.org
+biswap,Biswap,DeEx,,https://biswap.org
+spookyswap,SpookySwap,DeEx,,https://spookyswap.finance/
+ftx_us,FTX.us,CeEx,United States,https://ftx.us/
+liquid,Liquid,CeEx,Japan,https://www.liquid.com/
+mm_finance,MM.Finance,DeEx,,https://mm.finance
+sushiswap,SushiSwap (Ethereum),DeEx,,https://sushi.com
+fstswap,FstSwap,DeEx,,https://app.fstswap.vip/
+gemini,Gemini,CeEx,United States,https://www.gemini.com/
+balancerv2,Balancer V2 (Ethereum),DeEx,,https://balancer.fi
+traderjoe,Trader Joe,DeEx,,https://www.traderjoexyz.com/
+nice_hash,NiceHash,CeEx,Slovenia,https://www.nicehash.com/
+stellarx,StellarX,DeEx,,https://www.stellarx.com
+uniswapv3_polygon,Uniswap V3 (Polygon),DeEx,United States,https://uniswap.org
+poloniex,Poloniex,CeEx,United States,https://poloniex.com/
+currency,Currency.com,CeEx,Gibraltar,https://currency.com/
+dodo,DODO (Ethereum),DeEx,,https://dodoex.io
+uniswapv3_arbitrum,Uniswap V3 (Arbitrum),DeEx,United States,https://uniswap.org
+quickswap,QuickSwap,DeEx,,https://quickswap.exchange/
+tombswap,Tomb Swap,DeEx,,https://swap.tomb.com/
+dodo_polygon,DODO (Polygon),DeEx,,https://dodoex.io
+polyx,Polyx,CeEx,Estonia,https://polyx.net
+coinfield,CoinField,CeEx,Canada,https://www.coinfield.com/
+cex,CEX.IO,CeEx,United Kingdom,https://cex.io/
+sushiswap_arbitrum,SushiSwap (Arbitrum),DeEx,,https://sushi.com
+mdex,Mdex (Heco),DeEx,,https://mdex.com/
+balancer,Balancer V1,DeEx,,https://balancer.fi
+apeswap,ApeSwap (BSC),DeEx,,https://apeswap.finance
+defikingdoms,DeFi Kingdoms,DeEx,,https://defikingdoms.com
+vvs_finance,VVS Finance,DeEx,,https://vvs.finance
+bitso,Bitso,CeEx,Mexico,https://bitso.com/
+sushiswap_polygon,SushiSwap (Polygon),DeEx,,https://sushi.com
+pangolin,Pangolin,DeEx,,https://pangolin.exchange
+shibaswap,ShibaSwap,DeEx,,https://shibaswap.com/
+spiritswap,SpiritSwap,DeEx,,https://www.spiritswap.finance
+babyswap,BabySwap,DeEx,,https://home.babyswap.finance
+balancerv2_polygon,Balancer V2 (Polygon),DeEx,,https://balancer.fi
+uniswapv3_optimism,Uniswap V3 (Optimism),DeEx,United States,https://uniswap.org
+nominex,Nominex,CeEx,Seychelles,https://nominex.io/
+crosstower,CrossTower,CeEx,United States,https://crosstower.com/
+farhad,Exbito,CeEx,Iran,https://exbito.com/
+knightswap,KnightSwap,DeEx,,https://app.knightswap.financial
+scalpex,Scalpex,CeEx,British Virgin Islands,https://www.scalpex.com
+mercado_bitcoin,Mercado Bitcoin,CeEx,Brazil,https://www.mercadobitcoin.com.br/
+sushiswap_harmony,SushiSwap (Harmony),DeEx,,https://sushi.com
+mdex_bsc,Mdex (BSC),DeEx,,https://mdex.com
+sushiswap_avalanche,SushiSwap (Avalanche),DeEx,,https://sushi.com
+jswap,Jswap,DeEx,,https://app.jswap.finance/
+tranquil_finance,Tranquil Finance (Defira),DeEx,,https://www.tranquil.finance
+mojitoswap,MojitoSwap,DeEx,,https://www.mojitoswap.finance
+pancakeswap,PancakeSwap V1,DeEx,Japan,https://pancakeswap.finance
+solarbeam,Solarbeam,DeEx,,https://solarbeam.io
+redot,Redot,CeEx,Estonia,https://redot.com/
+energiswap,Energiswap,DeEx,British Virgin Islands,https://www.energiswap.exchange
+zipswap,ZipSwap,DeEx,,https://zipswap.fi/
+benswap,BenSwap (SmartBCH),DeEx,,https://benswap.cash
+beamswap,Beamswap,DeEx,,https://app.beamswap.io/exchange/swap
+binance_dex,Binance DEX,DeEx,Malta,https://www.binance.org/
+oolongswap,OolongSwap,DeEx,,https://oolongswap.com/
+cherryswap,CherrySwap,DeEx,,https://www.cherryswap.net/
+darkknight,Dark Knight,DeEx,,https://dark.knightswap.financial
+ubeswap,Ubeswap,DeEx,,https://ubeswap.org
+protofi,ProtoFi Exchange,DeEx,,https://fantomdex.protofi.app/
+apeswap_polygon,ApeSwap (Polygon),DeEx,,https://apeswap.finance
+muesliswap_milkada,MuesliSwap (milkADA),DeEx,,https://milkomeda.muesliswap.com/swap
+viperswap,ViperSwap,DeEx,,https://viper.exchange/
+bakeryswap,BakerySwap,DeEx,,https://www.bakeryswap.org/
+therocktrading,The Rock Trading,CeEx,Italy,https://therocktrading.com/
+dfyn_polygon,Dfyn (Polygon),DeEx,,https://www.dfyn.network
+tetuswap,TetuSwap,DeEx,,https://swap.tetu.io/#/swap
+milkyswap,MilkySwap,DeEx,,https://www.milkyswap.exchange/swap
+stellaswap,StellaSwap,DeEx,,https://stellaswap.com
+coinflex,CoinFLEX,CeEx,Seychelles,https://coinflex.com/
+sushiswap_moonriver,SushiSwap (Moonriver),DeEx,,https://sushi.com
+mimo,Mimo,DeEx,,https://mimo.finance
+swapr_gnosis,Swapr (Gnosis),DeEx,,https://swapr.eth.link/#/swap?chainId=100
+dfx_polygon,DFX (Polygon),DeEx,,https://dfx.finance
+1inchv2,1inch Liquidity Protocol (Ethereum),DeEx,,https://1inch.io
+tethys,Tethys Finance,DeEx,,https://tethys.finance/
+morpheus_swap,Morpheus Swap,DeEx,,https://morpheusswap.finance/
+dfx,DFX (Ethereum),DeEx,,https://dfx.finance
+wigoswap,WigoSwap,DeEx,,https://wigoswap.io
+sigen,SIGEN.pro,CeEx,United Kingdom,https://sigen.pro
+namebase,Namebase,CeEx,United States,https://www.namebase.io

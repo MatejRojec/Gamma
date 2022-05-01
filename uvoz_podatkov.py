@@ -1,33 +1,61 @@
 import imp
 from traceback import print_tb
 
-import psycopg2 # potrebna knjiznica za dostop do postgrSQL
-import csv
-# dostop do baze
 from auth import *
+import csv
+
+import psycopg2, psycopg2.extensions, psycopg2.extras
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
 
 
 
-baza_datoteka = db
+conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 
-conn_string = 'host={0} user={1} password={2}'.format(host, user, password)
 
-#with psycopg2.connect(conn_string) as baza:
-#    with open('gama.sql') as f:
-#        koda = f.read()
-#    cur = baza.cursor()
-#    cur.executescript(koda)
+def ustvari_tabele():
+    with open('gama.sql') as f:
+        koda = f.read()
+    cur.execute(koda)
+    conn.commit()
+    print("Uspesno ustvaril tabele!")
 
-def uvoziCSV(cur, tabela):
+ustvari_tabele()
+
+def pobrisi_tabelo(tabela):
+    cur.execute("""
+        DROP TABLE {0};
+    """.format(tabela))
+    conn.commit()
+    print("Uspesno pobrisal tabelo!")
+
+#pobrisi_tabelo("tip_narocila")
+
+
+def uvoziCSV(tabela):
     with open('podatki/{0}'.format(tabela)) as csvfile:
         podatki = csv.reader(csvfile)
         vsiPodatki = [vrstica for vrstica in podatki]
         glava = vsiPodatki[0]
         vrstice = vsiPodatki[1:]
-        #nam izvede vec SQL stavkov na enkrat
-        cur.executemany(
-            "INSERT INTO {0} ({1}) VALUES ({2})".format(
-                tabela, ",".join(glava), ",".join(['?']*len(glava)), vrstice) # morda treba '?' zamenjati
-            )
+        ime_tabele = tabela.split("/")[-1].replace(".csv", "")
+        stolpci = ", ".join(glava)
+        zacetek = "INSERT INTO " + ime_tabele + " (" + stolpci + ") "
+        for r in vrstice:
+            neki = "('" +"', '".join(r) + "')"
+            izvedi = zacetek + " VALUES " + neki + " RETURNING id_borze "
+            cur.execute(izvedi)
+            rid, = cur.fetchone()
+            print("Uvožena občina %s z ID-jem %s" % (r[0], rid))
+        conn.commit()
+uvoziCSV("borze/borza.csv")
 
 
+def uvozSQL(tabela):
+    with open('podatki/{0}'.format(tabela)) as sqlfile:
+        koda = sqlfile.read()
+        cur.execute(koda)
+    conn.commit()
+    print("Uspesno nalozil podatke!")
+
+uvozSQL("uporabniki/uporabnik.sql")

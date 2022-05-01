@@ -1,3 +1,4 @@
+from pickle import FALSE
 from pandas import *
 
 def ce_or_de_ex(ceEx):
@@ -6,21 +7,29 @@ def ce_or_de_ex(ceEx):
     else:
         return "DeEx"
 
-df = read_csv("podatki/uporabniki/data_uporabniki.csv")
+df = read_csv("podatki/raw/data_uporabniki.csv")
 df = df[['CustomerId', 'Surname','Geography', 'Gender', 'Age']]
 df.rename(columns={"CustomerId": "id_uporabnika", "Surname": "priimek", "Geography" : "drzava", "Gender": "spol", "Age": "starost"}, inplace=True)
 #stoplci = df.columns.values.tolist()
 
 uporabniki = read_csv("podatki/uporabniki/uporabnik.csv")
-print(uporabniki)
+#print(uporabniki)
 
 
-borza = read_csv("podatki/borze/exchanges.csv")
-borza = borza[['id', 'name','1d.volume','centralized', 'location', 'website_url']]
-borza.rename(columns={'id': "id_boze" , 'name' : "ime",'1d.volume' : "volumen", 'location': "lokacija", 'website_url' : "povezava"}, inplace=True)
+borza = read_csv("podatki/raw/exchanges.csv")
+#borza = borza[['id', 'name','centralized', 'location']]
+#borza.rename(columns={'id': "id_borze" , 'name' : "ime", 'location': "lokacija"}, inplace=True)
+borza = borza[['id', 'name','centralized', 'location', 'website_url']]
+borza.rename(columns={'id': "id_borze" , 'name' : "ime", 'location': "lokacija", 'website_url' : "povezava"}, inplace=True)
+
 
 vrsta = borza['centralized'].apply(ce_or_de_ex)
 borza['centralized'] = vrsta
 borza.rename(columns={'centralized' : "vrsta"}, inplace=True)
 print(borza)
-#print(borza['lokacija'].value_counts()) #zani
+#print(borza['id_borze'].value_counts()) #zani
+
+
+#borza.to_csv("podatki/borze/borza.csv", encoding='utf-8', index=False)
+
+

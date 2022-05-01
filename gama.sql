@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS uporabnik;
+DROP TABLE IF EXISTS devizni_tecaj;
+DROP TABLE IF EXISTS tip_narocila;
 DROP TABLE IF EXISTS denarnica;
 DROP TABLE IF EXISTS borza;
 DROP TABLE IF EXISTS trasakcija;
-DROP TABLE IF EXISTS tip_narocila;
-DROP TABLE IF EXISTS devizni_tecaj;
+DROP TABLE IF EXISTS uporabnik;
 
 CREATE TABLE uporabnik (
     id_uporabnika INTEGER PRIMARY KEY,
@@ -11,20 +11,24 @@ CREATE TABLE uporabnik (
     priimek TEXT NOT NULL,  
     spol TEXT NOT NULL,
     datum_rojstva DATE NOT NULL,
-    drzava TEXT NOT NULL CHECK (drzava <> "Rusija"),
-    datum_registracije DATE(now())
+    drzava TEXT NOT NULL,
+    email TEXT NOT NULL,
+    geslo TEXT NOT NULL, 
+    datum_registracije DATE NOT NULL DEFAULT now()
 );
 
 CREATE TABLE borza (
-    id_borze INTEGER PRIMARY KEY,
+    id_borze TEXT PRIMARY KEY,
     ime TEXT NOT NULL,
-    vrsta TEXT NOT NULL
+    vrsta TEXT NOT NULL,
+    lokacija TEXT not NULL,
+    povezava TEXT NOT NULL
 );
 
 CREATE TABLE denarnica (
     id_denarnice INTEGER PRIMARY KEY,
     uporabnik_id INTEGER REFERENCES uporabnik(id_uporabnika),
-    borza_id INTEGER REFERENCES borza(id_borze)
+    borza_id TEXT REFERENCES borza(id_borze)
 );
 
 CREATE TABLE trasakcija (
@@ -45,5 +49,5 @@ CREATE TABLE tip_narocila (
 CREATE TABLE devizni_tecaj (
     osnovna_valuta TEXT,
     kotirajoca_valuta TEXT,
-    valutno_razmerje DOUBLE NOT NULL
+    valutno_razmerje DOUBLE PRECISION NOT NULL
 );

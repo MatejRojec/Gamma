@@ -1,6 +1,7 @@
 
 from bottle import *
 from auth import *
+import requests
 
 
 import psycopg2, psycopg2.extensions, psycopg2.extras
@@ -20,6 +21,19 @@ def index():
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijavno_okno():
     return template("prijava.html", naslov = "Prijava")
+@post('/prijava') # or @route('/prijava', method='POST')
+def prijava():
+    mail = request.forms.get('mail')
+    geslo = request.forms.get('geslo')
+    if preveri(mail, geslo):
+        return "<p>Dobrodošel {0}.</p>".format(mail)
+    else:
+        return '''<p>Napačni podatki za prijavo.
+Poskusite <a href="/prijava">še enkrat</a></p>'''
+
+def preveri(mail, geslo):
+    return mail=="admin" and geslo=="admin"
+
 
 @get('/stanje')
 def prever_stanje():
@@ -27,22 +41,14 @@ def prever_stanje():
 
 @get('/transakcija')
 def dodaj_trasakcijo():
-    return template("transakcija.html")
-
-# zahtevek POST
-#@post('/prijava') # or @route('/prijava', method='POST')
-#def prijava():
-#    uime = request.forms.get('uime')
-#    geslo = request.forms.get('geslo')
-#    if preveri(uime, geslo):
-#        return "<p>Dobrodošel {0}.</p>".format(uime)
-#    else:
-#        return '''<p>Napačni podatki za prijavo.
-#Poskusite <a href="/prijava">še enkrat</a></p>'''
-
-#def preveri(uime, geslo):
-#    return uime=="admin" and geslo=="admin"
+    valute = cur.execute("""SELECT osnovna_valuta FROM devizni_tecaj 
+                        GROUP BY osnovna_valuta
+                        ORDER BY osnovna_valuta""")
+    print(valute)
+    return template("transakcija.html", naslov = "transakcija")
+#SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta ORDER BY osnovna_valuta
 
 
-# Če dopišemo reloader=True, se bo sam restartal vsakič, ko spremenimo datoteko
+ #Če dopišemo reloader=True, se bo sam restartal vsakič, ko spremenimo datoteko
 run(host='localhost', port=8080, reloader=True)
+

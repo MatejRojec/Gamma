@@ -13,7 +13,6 @@ CREATE TABLE uporabnik (
     datum_rojstva DATE NOT NULL,
     drzava TEXT NOT NULL,
     email TEXT NOT NULL,
-    geslo TEXT NOT NULL, 
     datum_registracije DATE NOT NULL DEFAULT now()
 );
 
@@ -21,7 +20,7 @@ CREATE TABLE borza (
     id_borze TEXT PRIMARY KEY,
     ime TEXT NOT NULL,
     vrsta TEXT NOT NULL,
-    lokacija TEXT not NULL,
+    lokacija TEXT,
     povezava TEXT NOT NULL
 );
 

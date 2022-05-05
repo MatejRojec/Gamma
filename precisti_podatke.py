@@ -1,29 +1,39 @@
 from pickle import FALSE
 from pandas import *
 
-crypo_file_names = ["coin_Aave.csv",
-                    "coin_BinanceCoin.csv",
+#crypo_file_names = ["coin_Aave.csv",
+#                    "coin_BinanceCoin.csv",
+#                    "coin_Bitcoin.csv",
+#                    "coin_Cardano.csv",
+#                    "coin_ChainLink.csv",
+#                    "coin_Cosmos.csv",
+#                    "coin_CryptocomCoin.csv",
+#                    "coin_Dogecoin.csv",
+#                    "coin_EOS.csv",
+#                    "coin_Ethereum.csv",
+#                    "coin_Iota.csv",
+#                    "coin_Litecoin.csv",
+#                    "coin_Monero.csv",
+#                    "coin_NEM.csv",
+#                    "coin_Polkadot.csv",
+#                    "coin_Solana.csv",
+#                    "coin_Stellar.csv",
+#                    "coin_Tether.csv",
+#                    "coin_Tron.csv",
+#                    "coin_Uniswap.csv",
+#                    "coin_USDCoin.csv",
+#                    "coin_WrappedBitcoin.csv",
+#                    "coin_XRP.csv"]
+
+crypo_file_names = ["coin_BinanceCoin.csv",
                     "coin_Bitcoin.csv",
                     "coin_Cardano.csv",
-                    "coin_ChainLink.csv",
-                    "coin_Cosmos.csv",
-                    "coin_CryptocomCoin.csv",
                     "coin_Dogecoin.csv",
                     "coin_EOS.csv",
                     "coin_Ethereum.csv",
-                    "coin_Iota.csv",
-                    "coin_Litecoin.csv",
-                    "coin_Monero.csv",
-                    "coin_NEM.csv",
                     "coin_Polkadot.csv",
-                    "coin_Solana.csv",
                     "coin_Stellar.csv",
-                    "coin_Tether.csv",
-                    "coin_Tron.csv",
-                    "coin_Uniswap.csv",
-                    "coin_USDCoin.csv",
-                    "coin_WrappedBitcoin.csv",
-                    "coin_XRP.csv"]
+                    "coin_Tether.csv"]           
 
 def ce_or_de_ex(ceEx):
     if ceEx:

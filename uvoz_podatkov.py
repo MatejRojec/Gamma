@@ -20,7 +20,7 @@ def ustvari_tabele():
     conn.commit()
     print("Uspesno ustvaril tabele!")
 
-ustvari_tabele()
+#ustvari_tabele()
 
 def pobrisi_tabelo(tabela):
     cur.execute("""
@@ -35,20 +35,30 @@ def pobrisi_tabelo(tabela):
 def uvoziCSV(tabela):
     with open('podatki/{0}'.format(tabela)) as csvfile:
         podatki = csv.reader(csvfile)
-        vsiPodatki = [vrstica for vrstica in podatki]
-        glava = vsiPodatki[0]
-        vrstice = vsiPodatki[1:]
-        ime_tabele = tabela.split("/")[-1].replace(".csv", "")
-        stolpci = ", ".join(glava)
-        zacetek = "INSERT INTO " + ime_tabele + " (" + stolpci + ") "
-        for r in vrstice:
-            neki = "('" +"', '".join(r) + "')"
-            izvedi = zacetek + " VALUES " + neki + " RETURNING id_borze "
-            cur.execute(izvedi)
-            rid, = cur.fetchone()
-            print("Uvožena občina %s z ID-jem %s" % (r[0], rid))
+        next(podatki)
+        for r in podatki:
+            r = [None if x in ('', '-') else x for x in r]
+            if "borza.csv" in tabela:
+                cur.execute("""
+                    INSERT INTO borza
+                    (id_borze, ime, vrsta, lokacija, povezava)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, r)
+            elif "crypto.csv" in tabela:
+                cur.execute("""
+                    INSERT INTO devizni_tecaj
+                    (osnovna_valuta, kotirajoca_valuta, valutno_razmerje, datum_razmerja)
+                    VALUES (%s, %s, %s, %s)
+                """, r)
         conn.commit()
-uvoziCSV("borze/borza.csv")
+        print("Uspesno uvozil csv datoteko!")
+
+#uvoziCSV("borze/borza.csv")
+#uvoziCSV("crypto/crypto.csv")
+
+
+
+
 
 
 def uvozSQL(tabela):
@@ -58,4 +68,4 @@ def uvozSQL(tabela):
     conn.commit()
     print("Uspesno nalozil podatke!")
 
-uvozSQL("uporabniki/uporabnik.sql")
+#uvozSQL("uporabniki/uporabnik.sql")

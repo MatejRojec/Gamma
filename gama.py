@@ -1,5 +1,7 @@
+
 from bottle import *
 from auth import *
+
 
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
@@ -17,7 +19,7 @@ def index():
 
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijavno_okno():
-    return template("prijava.html")
+    return template("prijava.html", naslov = "Prijava")
 
 @get('/stanje')
 def prever_stanje():

@@ -57,10 +57,6 @@ def uvoziCSV(tabela):
 #uvoziCSV("crypto/crypto.csv")
 
 
-
-
-
-
 def uvozSQL(tabela):
     with open('podatki/{0}'.format(tabela)) as sqlfile:
         koda = sqlfile.read()

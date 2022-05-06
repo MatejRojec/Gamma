@@ -30,7 +30,7 @@ CREATE TABLE denarnica (
     borza_id TEXT REFERENCES borza(id_borze)
 );
 
-CREATE TABLE trasakcija (
+CREATE TABLE transakcija (
     id_transakcije INTEGER PRIMARY KEY,
     datum_cas TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     iz_kolicine DOUBLE PRECISION,

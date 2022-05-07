@@ -1,13 +1,30 @@
 % rebase('base.html', naslov=naslov)
 
-<span>Količina</span>
-    <br>
-    <input name='kolicina1' type='integer' value = '0'/> EUR
-    <br>
+<form action="/test" method="post">
 
-
-    <label for="cars">Choose a car:</label>
-    <select name="cars" id="cars">
-        % for valuta in valute:
-        <option value="valuta">{{valuta}}</option>
+    <span>Kupil:</span>
+    <input name='iz_kolicine' type='integer' value = '0'/>
+    <select name="crypto">
+        <option value="ADA">ADA</option>
+        <option value="BNB">BNB</option>
+        <option value="BTC">BTC</option>
+        <option value="DOGE">DOGE</option>
+        <option value="DOT">DOT</option>
+        <option value="EOS">EOS</option>
+        <option value="ETH">ETH</option>
+        <option value="USDT">USDT</option>
+        <option value="XLM">XLM</option>
     </select>
+    po ceni:
+    <input name='v_kolicino' type='integer' value = '0'/> USD za kovanec.
+    <input type="submit" value="Potrdi">
+</form>
+<table cellpadding="1" celspacing="1" border="1">
+    % for trr in trans:
+        <tr>
+            % for el in trr:
+                <td>{{el}}</td>
+            % end
+        </tr>
+    % end
+</table>

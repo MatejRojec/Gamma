@@ -13,6 +13,7 @@ CREATE TABLE uporabnik (
     datum_rojstva DATE NOT NULL,
     drzava TEXT NOT NULL,
     email TEXT NOT NULL,
+    geslo TEXT NOT NULL,
     datum_registracije DATE NOT NULL DEFAULT now()
 );
 
@@ -26,12 +27,14 @@ CREATE TABLE borza (
 
 CREATE TABLE denarnica (
     id_denarnice INTEGER PRIMARY KEY,
+    valuta TEXT NOT NULL,
     uporabnik_id INTEGER REFERENCES uporabnik(id_uporabnika),
     borza_id TEXT REFERENCES borza(id_borze)
 );
 
 CREATE TABLE transakcija (
     id_transakcije INTEGER PRIMARY KEY,
+    denarnica_id INTEGER REFERENCES denarnica(id_denarnice),
     datum_cas TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     iz_kolicine DOUBLE PRECISION,
     v_kolicino DOUBLE PRECISION,

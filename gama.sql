@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS devizni_tecaj;
 DROP TABLE IF EXISTS tip_narocila;
+DROP TABLE IF EXISTS transakcija;
 DROP TABLE IF EXISTS denarnica;
 DROP TABLE IF EXISTS borza;
-DROP TABLE IF EXISTS trasakcija;
 DROP TABLE IF EXISTS uporabnik;
 
 CREATE TABLE uporabnik (
@@ -43,7 +43,7 @@ CREATE TABLE transakcija (
 );
 
 CREATE TABLE tip_narocila (
-    transakcija_id INTEGER REFERENCES trasakcija(id_transakcije),
+    transakcija_id INTEGER REFERENCES transakcija(id_transakcije),
     vrsta_narocila TEXT,
     podvrsta_narocila TEXT NOT NULL
 );

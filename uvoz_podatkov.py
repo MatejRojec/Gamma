@@ -20,7 +20,7 @@ def ustvari_tabele():
     conn.commit()
     print("Uspesno ustvaril tabele!")
 
-ustvari_tabele()
+#ustvari_tabele()
 
 def pobrisi_tabelo(tabela):
     cur.execute("""
@@ -53,8 +53,8 @@ def uvoziCSV(tabela):
         conn.commit()
         print("Uspesno uvozil csv datoteko!")
 
-uvoziCSV("borze/borza.csv")
-uvoziCSV("crypto/crypto.csv")
+#uvoziCSV("borze/borza.csv")
+#uvoziCSV("crypto/crypto.csv")
 
 
 def uvozSQL(tabela):
@@ -64,4 +64,4 @@ def uvozSQL(tabela):
     conn.commit()
     print("Uspesno nalozil podatke!")
 
-uvozSQL("uporabniki/uporabnik.sql")
+#uvozSQL("uporabniki/uporabnik.sql")

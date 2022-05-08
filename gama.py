@@ -34,7 +34,6 @@ def id_uporabnik():
         return 0
 
 
-
 @get('/')
 def index():
     return "To je zacetna stran!"
@@ -46,37 +45,61 @@ def hashGesla(s):
 
 @get('/registracija')
 def registracija_get():
-    return template('registracija.html')
+    napaka = nastaviSporocilo()
+    return template('registracija.html', naslov="Registracija", napaka=napaka)
 
 @post('/registracija')
 def registracija_post():
-    emso = request.forms.emso
-    username = request.forms.username
-    password = request.forms.password
-    password2 = request.forms.password2
-    if emso is None or username is None or password is None or password2 is None:
-        nastaviSporocilo('Registracija ni možna') 
-        redirect('/registracija')
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    ime = request.forms.get('ime')
+    priimek = request.forms.get('priimek')
+    spol = request.forms.get('spol')
+    datum_rojstva = request.forms.get('datum_rojstva')
+    drzava = request.forms.get('drzava')
+    email = request.forms.get('email')
+    geslo = request.forms.get('geslo')
+    geslo2 = request.forms.get('geslo2')
+ 
     try: 
-        uporabnik = cur.execute("SELECT * FROM oseba WHERE emso = ?", (emso, )).fetchone()
+        cur.execute("SELECT * FROM uporabnik WHERE email = %s", [email])
+        data = cur.fetchall()   
+        if data != []:
+            email = None
+        else:
+            email = email
     except:
-        uporabnik = None
-    if uporabnik is None:
-        nastaviSporocilo('Registracija ni možna') 
+        email = email
+    if email is None:
+        nastaviSporocilo('Registracija ni možna ta email je že v uporabi') 
         redirect('/registracija')
         return
-    if len(password) < 4:
+    if len(geslo) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
         redirect('/registracija')
         return
-    if password != password2:
+    if geslo != geslo2:
         nastaviSporocilo('Gesli se ne ujemata.') 
         redirect('/registracija')
         return
-    zgostitev = hashGesla(password)
-    cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
-    response.set_cookie('username', username, secret=skrivnost)
-    redirect('/komitenti')
+
+    cur.execute("SELECT max(id_uporabnika) FROM uporabnik")
+    id_uporabnika = cur.fetchall()
+
+    id_uporabnika = id_uporabnika[0][0] + 1
+    zgostitev = hashGesla(geslo)
+    print([id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
+    try:
+        cur.execute("""INSERT INTO 
+        uporabnik (id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
+        VALUES  (%s, %s, %s, %s, %s, %s, %s, %s) """,
+        [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
+    except:
+        nastaviSporocilo('Registracija ni možna napacen vnos') 
+        redirect('/registracija')
+    #cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
+    #response.set_cookie('username', username, secret=skrivnost)
+    
+    redirect('/registracija')
 
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijavno_okno():

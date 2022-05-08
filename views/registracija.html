@@ -1,47 +1,64 @@
+% setdefault('napaka', '')
 % setdefault('naslov', 'Registracija')
-% rebase('base.html', naslov=naslov)
+% rebase('base.html', napaka=napaka, naslov=naslov)
 
 <form action="/registracija" method="post" autocomplete="off">
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="emso">Emšo</label>
-        <input id="emso" name="emso" type="text" class="form-control" required
-          oninput="this.setCustomValidity('')"
-          oninvalid="this.setCustomValidity('Obvezno polje')"
-          />
-      </div>
+    <label for="ime">Ime:</label>
+    <input id="ime" name="ime" type="text" required
+    oninput="this.setCustomValidity('')"
+    oninvalid="this.setCustomValidity('Obvezno polje')"
+    />
+    <br>
+    <label for="priimek">Priimek:</label>
+    <input id="priimek" name="priimek" type="text" required
+    oninput="this.setCustomValidity('')"
+    oninvalid="this.setCustomValidity('Obvezno polje')"
+    />
+    <br>
+
+    Spol:
+    <div>
+      <input type="radio" name="spol" value="M" checked="checked"> Moški
+      <input type="radio" name="spol" value="F"> Ženski
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="username">Uporabniško ime</label>
-        <input id="username" name="username" type="text" class="form-control" required
-          oninput="this.setCustomValidity('')"
-          oninvalid="this.setCustomValidity('Obvezno polje')"
-          />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="password">Geslo</label>
-        <input id="password" name="password" type="password" class="form-control" required
-          oninput="this.setCustomValidity('')"
-          oninvalid="this.setCustomValidity('Obvezno polje')"
-          />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="password2">Ponovno geslo</label>
-        <input id="password2" name="password2" type="password" class="form-control" required
-          oninput="this.setCustomValidity('')"
-          oninvalid="this.setCustomValidity('Obvezno polje')"
-          />
-      </div>
-    </div>
-    <div class="form-row col">
-      <button class="btn btn-primary" type="submit">
-        Registriraj se!
-      </button>
-    </div>
+    <br>
   
-  </form>
+    <label for="rojstvo">Datum rojstva:</label>
+    <input type="date" id="rojstvo" name="datum_rojstva"
+       value="2000-01-01"
+       min="1900-01-01" max="2002-12-31" required
+       oninput="this.setCustomValidity('')"
+       oninvalid="this.setCustomValidity('Obvezno polje')">
+    <br>
+
+    <label for="drzava">Drzava:</label>
+    <input id="drzava" name="drzava" type="text" required
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')"
+      />
+    <br>
+    <label for="email">Email:</label>
+    <input id="email" name="email" type="text" required
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')"
+      />
+    <br>
+    
+    <label for="geslo">Geslo:</label>
+    <input id="geslo" name="geslo" type="geslo" required
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')"
+      />
+    <br>
+    <label for="geslo2">Ponovno geslo:</label>
+    <input id="geslo2" name="geslo2" type="password" required
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')"
+      />
+    <br>
+    <button type="submit">
+      Registriraj se!
+    </button>
+
+  
+</form>

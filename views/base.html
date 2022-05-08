@@ -1,14 +1,20 @@
 <!DOCTYPE html>
+<html lang="sl">
+    
 <html>
-  <head>
-    <title>
-        {{naslov}}
-    </title>
+    <head>
+        <title>
+            {{naslov}}
+        </title>
+        
     </head>
 <body>
     <h2>
         {{naslov}}
     </h2>
+    % if napaka:
+        {{napaka}}
+    % end
 {{!base}}
 </body>
 </html>

@@ -99,7 +99,7 @@ def registracija_post():
     #cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
     #response.set_cookie('username', username, secret=skrivnost)
     
-    redirect('/registracija')
+    redirect('/uporabnik/{0}'.format(id_uporabnika))
 
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijavno_okno():
@@ -113,10 +113,28 @@ def prijava():
         return "<p>Dobrodošel {0}.</p>".format(mail)
     else:
         return '''<p>Napačni podatki za prijavo.
-Poskusite <a href="/prijava">še enkrat</a></p>'''
+        Poskusite <a href="/prijava">še enkrat</a></p>'''
+
+
+
+@get('/uporabnik/<id_uporabnika>')
+def uporabnik_get(id_uporbanika):
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    
+    return
+    
+
+
+
 
 def preveri(mail, geslo):
     return mail=="admin" and geslo=="admin"
+
+
+
+
+
+
 
 
 @get('/stanje')

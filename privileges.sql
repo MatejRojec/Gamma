@@ -46,3 +46,28 @@ SELECT t1.uporabnik_id,
        t1.valuta,
        buy - sell AS amount
 FROM t1 LEFT JOIN t2 ON t1.uporabnik_id = t2.uporabnik_id 
+
+
+-- poskus: ne zdruzije po borzah
+WITH t1 AS (
+SELECT uporabnik_id,
+       borza_id,
+       iz_valute AS valuta,
+       sum(iz_kolicine) AS x
+FROM transakcija AS trx
+WHERE uporabnik_id = 1 
+GROUP BY 1, 2, 3),
+t2 AS (
+SELECT uporabnik_id,
+       borza_id,
+       v_valuto AS valuta,
+       sum(v_kolicino) AS y
+FROM transakcija AS trx
+WHERE uporabnik_id = 1 
+GROUP BY 1, 2, 3)
+SELECT t1.uporabnik_id,
+       t1.borza_id,
+       t1.valuta, 
+       COALESCE(y, 0) - COALESCE(x, 0) AS amount
+FROM t1 FULL JOIN t2 ON t1.uporabnik_id = t2.uporabnik_id AND t1.valuta = t2.valuta
+WHERE t1.valuta <> ''

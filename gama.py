@@ -117,14 +117,53 @@ def prijava():
 
 
 
-@get('/uporabnik')
-def uporabnik_get():
+@get('/uporabnik/<id_uporabnika>')
+def uporabnik_get(id_uporabnika):
+    id_uporabnika = int(id_uporabnika)
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    #cur.execute()
-    aum = [100]  
+    cur.execute('''
+    WITH t1 AS (SELECT uporabnik_id,
+                    borza_id,
+                    iz_valute AS valuta,
+                    sum(iz_kolicine) AS x
+    FROM transakcija AS trx
+    WHERE uporabnik_id = %s
+    GROUP BY 1, 2, 3),
+    t2 AS (SELECT uporabnik_id,
+                borza_id,
+                v_valuto AS valuta,
+                sum(v_kolicino) AS y
+    FROM transakcija AS trx
+    WHERE uporabnik_id = %s 
+    GROUP BY 1, 2, 3),
+    t3 AS (SELECT t1.uporabnik_id,
+                b.ime,
+                t1.valuta, 
+                COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+    FROM t1 
+        FULL JOIN t2 ON t1.uporabnik_id = t2.uporabnik_id 
+            AND t1.valuta = t2.valuta 
+            AND t1.borza_id = t2.borza_id
+        LEFT JOIN borza AS b ON b.id_borze = t1.borza_id
+    WHERE t1.valuta <> ''),
+    t4 AS (SELECT t2.uporabnik_id,
+                b.ime,
+                t2.valuta, 
+                COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+    FROM t2 
+        FULL JOIN t1 ON t1.uporabnik_id = t2.uporabnik_id 
+            AND t1.valuta = t2.valuta 
+            AND t1.borza_id = t2.borza_id
+        LEFT JOIN borza AS b ON b.id_borze = t2.borza_id
+    WHERE t2.valuta <> '')
+    SELECT * FROM t3 
+    UNION 
+    SELECT * FROM t4
+    ''', [id_uporabnika]*2)
+    aum = 100  
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
-
+    data = cur.fetchall()
     return template('uporabnik.html',aum = aum, data = data)
 
 

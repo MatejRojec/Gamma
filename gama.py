@@ -117,11 +117,19 @@ def prijava():
 
 
 
-@get('/uporabnik/<id_uporabnika>')
-def uporabnik_get(id_uporbanika):
+@get('/uporabnik')
+def uporabnik_get():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
-    return
+    #cur.execute()
+    aum = [100]  
+    #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
+    data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
+
+    return template('uporabnik.html',aum = aum, data = data)
+
+
+
+
     
 
 

@@ -55,18 +55,45 @@ uporabniki = read_csv("podatki/uporabniki/uporabnik.csv")
 borza = read_csv("podatki/raw/exchanges.csv")
 #borza = borza[['id', 'name','centralized', 'location']]
 #borza.rename(columns={'id': "id_borze" , 'name' : "ime", 'location': "lokacija"}, inplace=True)
-borza = borza[['id', 'name','centralized', 'location', 'website_url']]
-borza.rename(columns={'id': "id_borze" , 'name' : "ime", 'location': "lokacija", 'website_url' : "povezava"}, inplace=True)
+borza = borza[['name','centralized', 'location', 'website_url']]
+borza.rename(columns={'name' : "ime", 'location': "lokacija", 'website_url' : "povezava"}, inplace=True)
+borza['id_borze'] = list(range(1, len(borza)+1))
+borza = borza[['id_borze', 'ime', 'centralized' ,'lokacija', 'povezava']]
+
+
 
 vrsta = borza['centralized'].apply(ce_or_de_ex)
 borza['centralized'] = vrsta
 borza.rename(columns={'centralized' : "vrsta"}, inplace=True)
+
 #print(borza)
 #print(borza['lokacija'].value_counts()) #zanimivo
 #borza.to_csv("podatki/borze/borza.csv", encoding='utf-8', index=False)
 
 
 # CRYPTO
+#def precisti_crypto(list_files):
+#    crypto = DataFrame({'Symbol':[], 'Close':[], 'Date':[]})
+#    for file_name in list_files:
+#        coin = read_csv("podatki/raw/{0}".format(file_name))
+#        coin = coin[['Symbol', 'Close', 'Date']]
+#        crypto = crypto.append(coin)
+#    crypto.rename(columns={'Symbol': "osnovna_valuta" , 'Close' : "valutno_razmerje", 'Date': "datum_razmerja"}, inplace=True)
+#    n = len(crypto)
+#    crypto["kotirajoca_valuta"] = ["USD"]*n
+#    crypto = crypto[["osnovna_valuta", "kotirajoca_valuta", "valutno_razmerje", "datum_razmerja"]]
+#    crypto.to_csv("podatki/crypto/crypto.csv", encoding='utf-8', index=False)
+#    print("Uspesno precistil crypto podatke!")
+#precisti_crypto(crypo_file_names)
+
+def to_future(datumi):
+    novi = []
+    for datum in datumi:
+        y, m, d  = datum.split('-')
+        leto = str(int(y) + 4)
+        novi.append('-'.join([leto, m, d]))
+    return novi
+
 def precisti_crypto(list_files):
     crypto = DataFrame({'Symbol':[], 'Close':[], 'Date':[]})
     for file_name in list_files:
@@ -76,14 +103,13 @@ def precisti_crypto(list_files):
     crypto.rename(columns={'Symbol': "osnovna_valuta" , 'Close' : "valutno_razmerje", 'Date': "datum_razmerja"}, inplace=True)
     n = len(crypto)
     crypto["kotirajoca_valuta"] = ["USD"]*n
+    datumi = crypto['datum_razmerja'].tolist()
+    crypto['datum_razmerja'] = to_future(datumi)
     crypto = crypto[["osnovna_valuta", "kotirajoca_valuta", "valutno_razmerje", "datum_razmerja"]]
     crypto.to_csv("podatki/crypto/crypto.csv", encoding='utf-8', index=False)
     print("Uspesno precistil crypto podatke!")
+
 #precisti_crypto(crypo_file_names)
-    
-
-
-
 
 
 

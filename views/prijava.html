@@ -1,12 +1,13 @@
-% rebase('base.html', naslov=naslov)
+% setdefault('napaka', '')
+% setdefault('naslov', 'Prijava')
+% rebase('base.html', napaka=napaka, naslov=naslov)
 
 
 <form action="/prijava" method="post">
-    <span>Elektronski naslov:</span><input name='mail' type='text' />
+    <span>Elektronski naslov:</span><input name='email' type='text' />
     <br>
     <span>Geslo:</span><input name='geslo' type='password' />
     <br>
     <input value='Prijava' type='submit' />
-    
 </form>
 

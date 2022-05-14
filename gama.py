@@ -1,4 +1,5 @@
 
+from pickle import TRUE
 from bottle import *
 from auth import *
 import requests
@@ -94,7 +95,7 @@ def registracija_post():
         VALUES  (%s, %s, %s, %s, %s, %s, %s, %s) """,
         [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
     except:
-        nastaviSporocilo('Registracija ni možna napacen vnos') 
+        nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect('/registracija')
     #cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
     #response.set_cookie('username', username, secret=skrivnost)
@@ -102,18 +103,33 @@ def registracija_post():
     redirect('/uporabnik/{0}'.format(id_uporabnika))
 
 @get('/prijava') # lahko tudi @route('/prijava')
-def prijavno_okno():
+def prijavno_get():
     return template("prijava.html", naslov = "Prijava")
 
 @post('/prijava') # or @route('/prijava', method='POST')
-def prijava():
-    mail = request.forms.get('mail')
+def prijava_post():
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    email = request.forms.get('email')
     geslo = request.forms.get('geslo')
-    if preveri(mail, geslo):
-        return "<p>Dobrodošel {0}.</p>".format(mail)
-    else:
-        return '''<p>Napačni podatki za prijavo.
-        Poskusite <a href="/prijava">še enkrat</a></p>'''
+    hashBaza = None
+    try: 
+        cur.execute("SELECT geslo FROM uporabnik WHERE email = %s", [email])
+        hashBaza = cur.fetchall()[0][0]
+    except:
+        hashBaza = None
+    if hashBaza is None:
+        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        redirect('/prijava')
+        return
+    if hashGesla(geslo) != hashBaza:
+        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        redirect('/prijava')
+        return    
+    cur.execute('SELECT id_uporabnika FROM uporabnik WHERE email = %s', [email])
+    id_uporabnika = cur.fetchall()[0][0]
+    redirect('/uporabnik/{0}'.format(id_uporabnika))
+
+
 
 
 
@@ -164,21 +180,13 @@ def uporabnik_get(id_uporabnika):
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     data = cur.fetchall()
-    return template('uporabnik.html',aum = aum, data = data)
+    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika)
 
 
-
-
-    
-
-
-
-
-def preveri(mail, geslo):
-    return mail=="admin" and geslo=="admin"
-
-
-
+@post('/uporabnik/<id_uporabnika>')
+def uporabnik_post(id_uporabnika):
+    #tu bomo potegnili dodano denarnica
+    pass
 
 
 
@@ -188,13 +196,15 @@ def preveri(mail, geslo):
 def prever_stanje():
     return template("stanje.html")
 
-@get('/transakcija')
-def trasakcija():
-    cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta ORDER BY osnovna_valuta")
-    valute = sum(cur.fetchall(), [])
-    cur.execute("SELECT * FROM transakcija")
-    trans = cur.fetchall()
-    return template("testiranje.html", naslov = "transakcija", valute = valute, trans=trans)
+@get('/transakcija/<id_uporabnika>')
+def trasakcija_get(id_uporabnika):
+    #tu bomo naredili transakcijo
+    return "blalalal"
+    #cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta ORDER BY osnovna_valuta")
+    #valute = sum(cur.fetchall(), [])
+    #cur.execute("SELECT * FROM transakcija")
+    #trans = cur.fetchall()
+    #return template("testiranje.html", naslov = "transakcija", valute = valute, trans=trans)
  #Če dopišemo reloader=True, se bo sam restartal vsakič, ko spremenimo datoteko
 
 

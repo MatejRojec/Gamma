@@ -33,7 +33,8 @@ crypo_file_names = ["coin_BinanceCoin.csv",
                     "coin_Ethereum.csv",
                     "coin_Polkadot.csv",
                     "coin_Stellar.csv",
-                    "coin_Tether.csv"]           
+                    "coin_Tether.csv"]    
+       
 
 def ce_or_de_ex(ceEx):
     if ceEx:

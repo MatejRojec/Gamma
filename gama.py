@@ -1,9 +1,9 @@
 
-from pickle import TRUE
 from bottle import *
 from auth import *
 import requests
 import hashlib
+from bottleext import *
 
 
 import psycopg2, psycopg2.extensions, psycopg2.extras
@@ -76,11 +76,11 @@ def registracija_post():
         return
     if len(geslo) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
     if geslo != geslo2:
         nastaviSporocilo('Gesli se ne ujemata.') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
 
     cur.execute("SELECT max(id_uporabnika) FROM uporabnik")
@@ -96,14 +96,14 @@ def registracija_post():
         [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
     #cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
     #response.set_cookie('username', username, secret=skrivnost)
     
-    redirect('/uporabnik/{0}'.format(id_uporabnika))
+    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
 
 @get('/prijava') # lahko tudi @route('/prijava')
-def prijavno_get():
+def prijava_get():
     return template("prijava.html", naslov = "Prijava")
 
 @post('/prijava') # or @route('/prijava', method='POST')
@@ -119,15 +119,16 @@ def prijava_post():
         hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava_get'))
         return
     if hashGesla(geslo) != hashBaza:
         nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
-        redirect('/prijava')
+        redirect(url('prijava_get'))
         return    
     cur.execute('SELECT id_uporabnika FROM uporabnik WHERE email = %s', [email])
     id_uporabnika = cur.fetchall()[0][0]
-    redirect('/uporabnik/{0}'.format(id_uporabnika))
+    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+
 
 
 
@@ -176,25 +177,63 @@ def uporabnik_get(id_uporabnika):
     UNION 
     SELECT * FROM t4
     ''', [id_uporabnika]*2)
+    data = cur.fetchall()
+    cur.execute('''
+    WITH t1 AS (SELECT DISTINCT id_borze FROM borza),
+    excluded AS (SELECT DISTINCT borza_id FROM transakcija WHERE uporabnik_id = %s)
+    SELECT t1.id_borze, t3.ime FROM t1 LEFT JOIN excluded AS t2 ON t2.borza_id = t1.id_borze 
+    LEFT JOIN borza AS t3 ON t3.id_borze = t1.id_borze 
+    WHERE t2.borza_id IS NULL
+    ORDER BY 2
+    ''', [id_uporabnika])
+    uporabnik_borze = cur.fetchall()
+    cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta")
+    valute = cur.fetchall()
     aum = 100  
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
-    data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
-    data = cur.fetchall()
-    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika)
+    #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
+    
+    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika, uporabnik_borze = uporabnik_borze, valute=valute)
 
 
 @post('/uporabnik/<id_uporabnika>')
 def uporabnik_post(id_uporabnika):
-    #tu bomo potegnili dodano denarnica
-    pass
+    id_uporabnika = int(id_uporabnika)
+    denarnica = request.forms.get('valuta')
+    ime_borze = request.forms.get('ime_borze')
+    borza_id = request.forms.get("id_borze")
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute(" SELECT MAX(id_transakcije) FROM transakcija")
+    id_transakcije = 1 + cur.fetchall()[0][0]
+    if ime_borze == None:
+        cur.execute(''' 
+        INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s);
+        ''',
+        [id_transakcije, id_uporabnika, borza_id, 0, 0, "USD", "A"])
+        redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+    else:
+        cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
+        borza_id = cur.fetchall()[0][0]
+        cur.execute(''' 
+        SELECT v_valuto FROM transakcija 
+        WHERE uporabnik_id = %s AND borza_id = %s AND v_valuto <> ''
+        GROUP BY v_valuto
+        ''', [id_uporabnika, borza_id])
+        uporabnik_valute = cur.fetchall()
+        if [denarnica] in uporabnik_valute:
+            nastaviSporocilo("Ta denarnica že obstaja")
+            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+        else:
+            print(id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A")
+            cur.execute(''' 
+            INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s);
+            ''',
+            [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
+            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+        
 
-
-
-
-
-@get('/stanje')
-def prever_stanje():
-    return template("stanje.html")
 
 @get('/transakcija/<id_uporabnika>')
 def trasakcija_get(id_uporabnika):

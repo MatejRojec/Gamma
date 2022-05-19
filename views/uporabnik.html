@@ -19,8 +19,8 @@ print("")
     </select>
     <button value='{{data[0][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<form action="/transakcija/{{id_uporabnika}}">
-    <button value='' type="submit">Dodaj transakcijo</button><br>
+<form action="{{url('transakcija_get', id_uporabnika=id_uporabnika, borza = data[0][1])}}">
+    <button type="submit">Dodaj transakcijo</button><br>
 </form>
 
 %else:
@@ -45,8 +45,8 @@ print("")
     </select>
     <button value='{{data[i][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<form action="/transakcija/{{id_uporabnika}}">
-    <button value='' type="submit">Dodaj transakcijo</button><br>
+<form action="{{url('transakcija_get', id_uporabnika=id_uporabnika, borza = data[i][1])}}">
+    <button type="submit">Dodaj transakcijo</button><br>
 </form>
 
 %            st = 0
@@ -66,8 +66,8 @@ print("")
     </select>
     <button value='{{data[i][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<form action="/transakcija/{{id_uporabnika}}">
-    <button value='' type="submit">Dodaj transakcijo</button><br>
+<form action="{{url('transakcija_get', id_uporabnika=id_uporabnika, borza = data[i][1])}}">
+    <button type="submit">Dodaj transakcijo</button><br>
 </form>
 
 %            st = 0    
@@ -86,8 +86,8 @@ print("")
     </select>
     <button value='{{data[n-1][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<form action="/transakcija/{{id_uporabnika}}">
-    <button value='' type="submit">Dodaj transakcijo</button><br>
+<form action="{{url('transakcija_get', id_uporabnika=id_uporabnika, borza = data[i][1])}}">
+    <button type="submit">Dodaj transakcijo</button><br>
 </form>
 %    else:
 
@@ -101,8 +101,8 @@ print("")
     </select>
     <button value='{{data[n-1][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<form action="/transakcija/{{id_uporabnika}}">
-    <button value='' type="submit">Dodaj transakcijo</button><br>
+<form action="{{url('transakcija_get', id_uporabnika=id_uporabnika, borza = data[n-1][1])}}">
+    <button  type="submit">Dodaj transakcijo</button><br>
 </form>    
 %    end
 %end

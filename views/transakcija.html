@@ -2,20 +2,115 @@
 % setdefault('naslov', 'Transakcija')
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="{{url('transkacija_get')}}" method="post">
-    <label for="valuta">Iz količine:</label>
-    <input id="kolicina" name="iz_kolicine" type="number"/>
-    <select name="valuta" id="valuta">
-        %for valuta in valute:
-            <option value='{{valuta[0]}}'>Denarnica {{valuta[0]}}</option>
-        %end
-    </select>
-    <input id="kolicina" name="v_kolicino" type="number"/>
-    <select name="valuta" id="valuta">
-        %for valuta in valute:
-            <option value='{{valuta[0]}}'>Denarnica {{valuta[0]}}</option>
-        %end
-    </select>
-    <button value='{{data[0][1]}}' name='ime_borze' type="submit">+</button><br>
+<form action="{{url('transkacija_post', id_uporabnika=id_uporabnika)}}" method="post">
+    <table>
+        
+        <tr>
+            <th><label for="iz_valuta">Iz vaulte:</label></th>
+            <th><label for="v_valuto">V vaulto:</label></th>
+            <th><label for="kolicina">Kolicina:</label></th>
+            <th><label for="datum">Datum transakcije:</label></th>
+        </tr>
+        <tr>
+            <th>
+
+                <select id="iz_valute" name="iz_valute">
+                    %for valuta in valute:
+                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                    %end
+                </select>
+            </th>
+            <th>
+                <select name="v_valuto" id="v_valuto">
+                    %for valuta in valute:
+                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                    %end
+                </select>
+            </th>
+            <th>
+                <input id="kolicina" name="kolicina" type="number" required
+                oninput="this.setCustomValidity('')"
+                oninvalid="this.setCustomValidity('Obvezno polje')"
+                />
+            </th>
+            <th>
+                <input type="date" id="datum" name="datum_transakcije"
+                value="{{datum}}"
+                min="2010-01-01" max="{{datum}}">
+                <br>
+            </th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th><button value='{{borza}}' name='ime_borze' type="submit">Zabeleži transakcijo</button></th>
+        </tr>    
+    </table>
+</form>
+
+<br>
+<br>
+<br>
+
+
+<form action="{{url('D_W_get')}}" method="get">
+    <table>
+        <tr>
+            <th>Depozite</th>
+            <th></th>
+            <th></th>
+            <th>Withdrawal</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <th>Valuta</th>
+            <th>Kolicina</th>
+            <th>Datum</th>
+            <th>Valuta</th>
+            <th>Kolicina</th>
+            <th>Datum</th>
+        </tr>
+        <tr>
+            <th>
+                <select id="iz_valute" name="iz_valute">
+                    %for valuta in valute:
+                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                    %end
+                </select>
+            </th>
+            <th><input id="kolicina" name="kolicina" type="number"/></th>
+            <th>
+                <input type="date" id="datum" name="datum_D"
+                value="{{datum}}"
+                min="2010-01-01" max="{{datum}}">
+                <br>
+            </th>
+            <th>
+                <select id="iz_valute" name="iz_valute">
+                    %for valuta in valute:
+                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                    %end
+                </select>
+            </th>
+            <th><input id="kolicina" name="kolicina" type="number"/></th>
+            <th>
+                <input type="date" id="datum" name="datum_W"
+                value="{{datum}}"
+                min="2010-01-01" max="{{datum}}">
+                <br>
+            </th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th><button value='' name='' type="submit">D</button></th>
+            <th></th>
+            <th></th>
+            <th><button value='' name='' type="submit">W</button></th>
+        </tr>
+
+    </table>
 </form>
 

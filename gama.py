@@ -1,7 +1,6 @@
 
 from bottle import *
 from auth import *
-import requests
 import hashlib
 from bottleext import *
 

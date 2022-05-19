@@ -1,30 +1,21 @@
-% rebase('base.html', naslov=naslov)
+% setdefault('napaka', '')
+% setdefault('naslov', 'Transakcija')
+% rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="/test" method="post">
-
-    <span>Kupil:</span>
-    <input name='iz_kolicine' type='integer' value = '0'/>
-    <select name="crypto">
-        <option value="ADA">ADA</option>
-        <option value="BNB">BNB</option>
-        <option value="BTC">BTC</option>
-        <option value="DOGE">DOGE</option>
-        <option value="DOT">DOT</option>
-        <option value="EOS">EOS</option>
-        <option value="ETH">ETH</option>
-        <option value="USDT">USDT</option>
-        <option value="XLM">XLM</option>
+<form action="{{url('transkacija_get')}}" method="post">
+    <label for="valuta">Iz količine:</label>
+    <input id="kolicina" name="iz_kolicine" type="number"/>
+    <select name="valuta" id="valuta">
+        %for valuta in valute:
+            <option value='{{valuta[0]}}'>Denarnica {{valuta[0]}}</option>
+        %end
     </select>
-    po ceni:
-    <input name='v_kolicino' type='integer' value = '0'/> USD za kovanec.
-    <input type="submit" value="Potrdi">
+    <input id="kolicina" name="v_kolicino" type="number"/>
+    <select name="valuta" id="valuta">
+        %for valuta in valute:
+            <option value='{{valuta[0]}}'>Denarnica {{valuta[0]}}</option>
+        %end
+    </select>
+    <button value='{{data[0][1]}}' name='ime_borze' type="submit">+</button><br>
 </form>
-<table cellpadding="1" celspacing="1" border="1">
-    % for trr in trans:
-        <tr>
-            % for el in trr:
-                <td>{{el}}</td>
-            % end
-        </tr>
-    % end
-</table>
+

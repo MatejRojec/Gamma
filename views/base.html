@@ -6,6 +6,20 @@
         <title>
             {{naslov}}
         </title>
+        <nav>
+            %znacka = 0
+            <a href="{{url('aboute')}}">O podjetju</a>
+            <a href="{{url('borze')}}">Borze</a>
+            <a href="{{url('crypto')}}">Crypto</a>
+            %if znacka == 0:
+            <a href="{{url('registracija_get')}}">Registracija</a>
+            <a href="{{url('prijava_get')}}">Prijava</a>
+            %end 
+            %if znacka != 0:
+            <a href="{{url('uporabnik_get', id_uporabnika=piskotek)}}">Moj profil</a>
+            <a href="{{url('odjava')}}">Odjava</a>
+            %end
+          </nav>
         
     </head>
 <body>

@@ -326,7 +326,11 @@ def aboute():
 
 @get('/borze/')
 def borze():
-    return template("borze.html", naslov='Borze')
+    conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
+    cur.execute("SELECT ime, povezava FROM borza")
+    data = cur.fetchall()
+    return template("borze.html", naslov='Borze', data=data)
 
 @get('/crypto/')
 def crypto():

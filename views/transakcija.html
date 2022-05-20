@@ -1,19 +1,30 @@
 % setdefault('napaka', '')
 % setdefault('naslov', 'Transakcija')
 % rebase('base.html', napaka=napaka, naslov=naslov)
+<script>
+    function myFunction() {
+        confirm("Tu bo pregeld vnesenega");
+    }
+</script>
 
-<form action="{{url('transkacija_post', id_uporabnika=id_uporabnika)}}" method="post">
+
+<form action="{{url('transkacija_post', id_uporabnika=id_uporabnika, borza=borza[1])}}" method="post">
     <table>
         
         <tr>
-            <th><label for="iz_valuta">Iz vaulte:</label></th>
-            <th><label for="v_valuto">V vaulto:</label></th>
             <th><label for="kolicina">Kolicina:</label></th>
+            <th><label for="iz_valuta">Vaulta &rarr;</label></th>
+            <th><label for="v_valuto">V vaulto:</label></th>
             <th><label for="datum">Datum transakcije:</label></th>
         </tr>
         <tr>
             <th>
-
+                <input id="kolicina" name="kolicina" type="number" required
+                oninput="this.setCustomValidity('')"
+                oninvalid="this.setCustomValidity('Obvezno polje')"
+                />
+            </th>
+            <th>
                 <select id="iz_valute" name="iz_valute">
                     %for valuta in valute:
                     <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
@@ -28,12 +39,6 @@
                 </select>
             </th>
             <th>
-                <input id="kolicina" name="kolicina" type="number" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-            </th>
-            <th>
                 <input type="date" id="datum" name="datum_transakcije"
                 value="{{datum}}"
                 min="2010-01-01" max="{{datum}}">
@@ -44,30 +49,24 @@
             <th></th>
             <th></th>
             <th></th>
-            <th><button value='{{borza}}' name='ime_borze' type="submit">Zabeleži transakcijo</button></th>
+            <th><button value='{{borza[0]}}' name='id_borze' type="submit" onclick="myFunction()">Zabeleži transakcijo</button></th>
         </tr>    
     </table>
 </form>
 
-<br>
-<br>
+
+
+
 <br>
 
 
 <form action="{{url('D_W_get')}}" method="get">
+
+<details>
+    <summary><b>Depozite</b></summary>
+    
     <table>
         <tr>
-            <th>Depozite</th>
-            <th></th>
-            <th></th>
-            <th>Withdrawal</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <tr>
-            <th>Valuta</th>
-            <th>Kolicina</th>
-            <th>Datum</th>
             <th>Valuta</th>
             <th>Kolicina</th>
             <th>Datum</th>
@@ -75,7 +74,7 @@
         <tr>
             <th>
                 <select id="iz_valute" name="iz_valute">
-                    %for valuta in valute:
+                    %for valuta in vse_valute:
                     <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                     %end
                 </select>
@@ -87,6 +86,26 @@
                 min="2010-01-01" max="{{datum}}">
                 <br>
             </th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th><button value='D' name='' type="submit">D</button></th>
+        </tr>
+
+    </table>
+</details>
+
+
+<details>
+    <summary><b>Withdrawal</b></summary>
+    <table>
+        <tr>
+            <th>Valuta</th>
+            <th>Kolicina</th>
+            <th>Datum</th>
+        </tr>
+        <tr>
             <th>
                 <select id="iz_valute" name="iz_valute">
                     %for valuta in valute:
@@ -105,12 +124,12 @@
         <tr>
             <th></th>
             <th></th>
-            <th><button value='' name='' type="submit">D</button></th>
-            <th></th>
-            <th></th>
-            <th><button value='' name='' type="submit">W</button></th>
+            <th><button value='W' name='' type="submit">W</button></th>
         </tr>
 
     </table>
+</details>
+
+
 </form>
 

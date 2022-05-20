@@ -37,15 +37,17 @@ def id_uporabnik():
         return 0
 
 
-@get('/')
-def index():
-    return "To je zacetna stran!"
-    
 def hashGesla(s):
     m = hashlib.sha256()
     m.update(s.encode("utf-8"))
     return m.hexdigest()
 
+@get('/')
+def index():
+    znacka = id_uporabnik()
+    print(znacka)
+    return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
+    
 @get('/registracija')
 def registracija_get():
     napaka = nastaviSporocilo()
@@ -74,7 +76,7 @@ def registracija_post():
         email = email
     if email is None:
         nastaviSporocilo('Registracija ni možna ta email je že v uporabi') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
     if len(geslo) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
@@ -106,7 +108,8 @@ def registracija_post():
 
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijava_get():
-    return template("prijava.html", naslov = "Prijava")
+    napaka = nastaviSporocilo()
+    return template("prijava.html", naslov = "Prijava", napaka=napaka)
 
 @post('/prijava') # or @route('/prijava', method='POST')
 def prijava_post():
@@ -120,11 +123,11 @@ def prijava_post():
     except:
         hashBaza = None
     if hashBaza is None:
-        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        napaka = nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
         redirect(url('prijava_get'))
         return
     if hashGesla(geslo) != hashBaza:
-        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        napaka = nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
         redirect(url('prijava_get'))
         return    
     cur.execute('SELECT id_uporabnika FROM uporabnik WHERE email = %s', [email])
@@ -190,8 +193,8 @@ def uporabnik_get(id_uporabnika):
     aum = 100  
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
-    
-    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika, uporabnik_borze = uporabnik_borze, valute=valute)
+    napaka = nastaviSporocilo()
+    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika, uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka)
 
 
 @post('/uporabnik/<id_uporabnika>')
@@ -204,33 +207,37 @@ def uporabnik_post(id_uporabnika):
     cur.execute(" SELECT MAX(id_transakcije) FROM transakcija")
     id_transakcije = 1 + cur.fetchall()[0][0]
     if ime_borze == None:
-        cur.execute(''' 
+        cur.execute(""" 
         INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
         VALUES (%s,%s,%s,%s,%s,%s,%s);
-        ''',
+        """,
         [id_transakcije, id_uporabnika, borza_id, 0, 0, "USD", "A"])
         redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     else:
         cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
         borza_id = cur.fetchall()[0][0]
-        cur.execute(''' 
+        cur.execute(""" 
         SELECT v_valuto FROM transakcija 
         WHERE uporabnik_id = %s AND borza_id = %s AND v_valuto <> ''
         GROUP BY v_valuto
-        ''', [id_uporabnika, borza_id])
+        """, [id_uporabnika, borza_id])
         uporabnik_valute = cur.fetchall()
         if [denarnica] in uporabnik_valute:
             nastaviSporocilo("Ta denarnica že obstaja")
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
         else:
             print(id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A")
-            cur.execute(''' 
-            INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
-            VALUES (%s,%s,%s,%s,%s,%s,%s);
-            ''',
-            [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
+            try:
+                cur.execute(""" 
+                INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+                VALUES (%s,%s,%s,%s,%s,%s,%s);
+                """,
+                [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
+                print('tuki1')
+            except:
+                print('tuki2')
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
-        
+            return
 
 
 @get('/transakcija/<id_uporabnika>/<borza>')
@@ -241,37 +248,95 @@ def transakcija_get(id_uporabnika, borza):
     cur.execute("SELECT id_borze FROM borza WHERE ime = %s", [borza])
     borza_id = cur.fetchone()[0]
 
-    cur.execute('''
+    cur.execute("""
     SELECT v_valuto FROM transakcija 
     WHERE uporabnik_id=%s AND borza_id = %s AND v_valuto <> ''
     GROUP BY v_valuto
-    ''', [int(id_uporabnika), int(borza_id)])
+    """, [int(id_uporabnika), int(borza_id)])
     valute = cur.fetchall()
-    #valute = [['USD'], ['BTC'], ['ETH']]    
-    return template("transakcija.html", naslov ="Transakcija", borza=borza, datum=datum, valute=valute, id_uporabnika=id_uporabnika)
+    #valute = [['USD'], ['BTC'], ['ETH']]  
+    cur.execute("""
+    SELECT osnovna_valuta FROM devizni_tecaj 
+    GROUP BY osnovna_valuta
+    """) 
+    vse_valute = cur.fetchall() #za depozit
+    napaka = nastaviSporocilo()
+    return template("transakcija.html", 
+    naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, vse_valute=vse_valute, id_uporabnika=id_uporabnika, napaka=napaka)
 
 
-@post('/transakcija/<id_uporabnika>')
-def transkacija_post(id_uporabnika):
+@post('/transakcija/<id_uporabnika>/<borza>')
+def transkacija_post(id_uporabnika, borza):
     id_uporabnika = int(id_uporabnika)
     iz_valute = request.forms.get('iz_valute')
     v_valuto = request.forms.get('v_valuto')
-    kolicina = request.forms.get('kolicina')
+    iz_kolicine = float(request.forms.get('kolicina'))
     datum_transakcije = request.forms.get('datum_transakcije')
-    ime_borze = request.forms.get('ime_borze')
+    borza_id = request.forms.get('id_borze')
 
-    print(id_uporabnika, iz_valute, v_valuto, kolicina, datum_transakcije, ime_borze)
-    #.....
+    if iz_valute==v_valuto: #napaka
+        nastaviSporocilo('Valutu morata biti različni, sicer transakcija ni možna!')
+        redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
+        return
+    elif iz_valute == 'USD': #gre za buy
+        cur.execute("""
+        SELECT valutno_razmerje FROM devizni_tecaj
+        WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
+        """, [v_valuto, datum_transakcije])
+        razmerje = float(cur.fetchone()[0])
+        v_kolicino = iz_kolicine / razmerje
+        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+    elif v_valuto == 'USD': # gre za sell
+        cur.execute("""
+        SELECT valutno_razmerje FROM devizni_tecaj
+        WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
+        """, [iz_valute, datum_transakcije])
+        razmerje = float(cur.fetchone()[0])
+        v_kolicino = iz_kolicine / razmerje
+        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+    else:
+        cur.execute("""
+        SELECT valutno_razmerje FROM devizni_tecaj
+        WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
+        """, [iz_valute, datum_transakcije])
+        razmerje1 = float(cur.fetchone()[0])
+        cur.execute("""
+        SELECT valutno_razmerje FROM devizni_tecaj
+        WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
+        """, [v_valuto, datum_transakcije])
+        razmerje2 = float(cur.fetchone()[0])
+        v_kolicino = iz_kolicine * (razmerje1/razmerje2)
+        
+        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+    redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
     return 
     
 
-@get('/D_W')
+@get('/D_W/')
 def D_W_get():
     # tu bomo naredili poizvedbo za dodajenaje D in W
     return
 
 
 
+@get('/aboute/')
+def aboute():
+    return template("aboute.html", naslov='O podjetju')
+
+
+@get('/borze/')
+def borze():
+    return template("borze.html", naslov='Borze')
+
+@get('/crypto/')
+def crypto():
+    return template("crypto.html", naslov='Crypto')
+
+
+@get('/odjava/')
+def odjava():
+    #response.delete_cookie("id", path='/')
+    redirect(url('index'))
 
 run(host='localhost', port=8080, reloader=True)
 

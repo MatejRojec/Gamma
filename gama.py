@@ -227,15 +227,11 @@ def uporabnik_post(id_uporabnika):
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
         else:
             print(id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A")
-            try:
-                cur.execute(""" 
-                INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
-                VALUES (%s,%s,%s,%s,%s,%s,%s);
-                """,
-                [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
-                print('tuki1')
-            except:
-                print('tuki2')
+            cur.execute(""" 
+            INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s);
+            """,
+            [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
             return
 
@@ -255,14 +251,9 @@ def transakcija_get(id_uporabnika, borza):
     """, [int(id_uporabnika), int(borza_id)])
     valute = cur.fetchall()
     #valute = [['USD'], ['BTC'], ['ETH']]  
-    cur.execute("""
-    SELECT osnovna_valuta FROM devizni_tecaj 
-    GROUP BY osnovna_valuta
-    """) 
-    vse_valute = cur.fetchall() #za depozit
     napaka = nastaviSporocilo()
     return template("transakcija.html", 
-    naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, vse_valute=vse_valute, id_uporabnika=id_uporabnika, napaka=napaka)
+    naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, id_uporabnika=id_uporabnika, napaka=napaka)
 
 
 @post('/transakcija/<id_uporabnika>/<borza>')
@@ -275,7 +266,7 @@ def transkacija_post(id_uporabnika, borza):
     borza_id = request.forms.get('id_borze')
 
     if iz_valute==v_valuto: #napaka
-        nastaviSporocilo('Valutu morata biti različni, sicer transakcija ni možna!')
+        nastaviSporocilo('Valuti morata biti različni, sicer transakcija ni možna!')
         redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
         return
     elif iz_valute == 'USD': #gre za buy
@@ -292,7 +283,7 @@ def transkacija_post(id_uporabnika, borza):
         WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
         """, [iz_valute, datum_transakcije])
         razmerje = float(cur.fetchone()[0])
-        v_kolicino = iz_kolicine / razmerje
+        v_kolicino = iz_kolicine * razmerje
         print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
     else:
         cur.execute("""
@@ -308,20 +299,99 @@ def transkacija_post(id_uporabnika, borza):
         v_kolicino = iz_kolicine * (razmerje1/razmerje2)
         
         print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
-    redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
+    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     return 
     
 
-@get('/D_W/')
-def D_W_get():
-    # tu bomo naredili poizvedbo za dodajenaje D in W
+@post('/depwith/<id_uporabnika>/<borza_id>')
+def depwith_post(id_uporabnika, borza_id):
+    print("krneki")
+    id_uporabnika = int(id_uporabnika)
+    valuta = request.forms.get('valuta')
+    kolicina = float(request.forms.get('kolicina'))
+    datum_narocila = request.forms.get('datum')
+    narocilo = list(request.forms.get('narocilo'))
+    print(narocilo)
+    if narocilo[0] == "D":
+        #cur.execute(""" 
+        #       INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+        #       VALUES (%s,%s,%s,%s,%s,%s,%s);
+        #       """,
+        #       [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
+        print([10, id_uporabnika, int(borza_id),0, kolicina, valuta, "D"])
+    else:
+        cur.execute('''
+        WITH t0 AS (SELECT *
+        FROM transakcija
+        WHERE uporabnik_id = %s),
+
+        t1 AS (SELECT uporabnik_id,
+                            borza_id,
+                            iz_valute AS valuta,
+                            sum(iz_kolicine) AS x
+        FROM t0 AS trx
+        GROUP BY 1, 2, 3),
+
+        t2 AS (SELECT uporabnik_id,
+                    borza_id,
+                    v_valuto AS valuta,
+                    sum(v_kolicino) AS y
+        FROM t0 AS trx 
+        GROUP BY 1, 2, 3),
+
+        t3 AS (SELECT t1.uporabnik_id,
+                    b.id_borze,
+                    t1.valuta, 
+                    COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+        FROM t1 
+            FULL JOIN t2 ON t1.uporabnik_id = t2.uporabnik_id 
+                AND t1.valuta = t2.valuta 
+                AND t1.borza_id = t2.borza_id
+            LEFT JOIN borza AS b ON b.id_borze = t1.borza_id
+        WHERE t1.valuta <> ''),
+
+        t4 AS (SELECT t2.uporabnik_id,
+                    b.id_borze,
+                    t2.valuta, 
+                    COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+        FROM t2 
+            FULL JOIN t1 ON t1.uporabnik_id = t2.uporabnik_id 
+                AND t1.valuta = t2.valuta 
+                AND t1.borza_id = t2.borza_id
+            LEFT JOIN borza AS b ON b.id_borze = t2.borza_id
+        WHERE t2.valuta <> ''),
+
+        t5 as(     
+        SELECT * FROM t3 
+        UNION 
+        SELECT * FROM t4)
+
+        SELECT t5.amount
+        FROM t5 
+        WHERE t5.id_borze = %s AND valuta = %s    
+        ''',  [id_uporabnika, borza_id, valuta])
+        stanje = cur.fetchone()
+        if stanje < kolicina:
+            nastaviSporocilo('Stanje na denarnici je prenizko')
+            redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=narocilo[1]))
+        else:
+            #cur.execute(""" 
+            #       INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+            #       VALUES (%s,%s,%s,%s,%s,%s,%s);
+            #       """,
+            #       [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
+            print([10, id_uporabnika, int(borza_id),kolicina, 0, valuta, "W"])
+
+    
+
+
     return
 
 
 
-@get('/aboute/')
-def aboute():
-    return template("aboute.html", naslov='O podjetju')
+@get('/about/')
+def about():
+    return template("about.html", naslov='O podjetju')
 
 
 @get('/borze/')

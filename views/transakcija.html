@@ -3,7 +3,7 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 <script>
     function myFunction() {
-        confirm("Tu bo pregeld vnesenega");
+        confirm("Tu bo pregled vnesenega");
     }
 </script>
 
@@ -60,10 +60,10 @@
 <br>
 
 
-<form action="{{url('D_W_get')}}" method="get">
+<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post">
 
 <details>
-    <summary><b>Depozite</b></summary>
+    <summary><b>Depozit</b></summary>
     
     <table>
         <tr>
@@ -73,15 +73,17 @@
         </tr>
         <tr>
             <th>
-                <select id="iz_valute" name="iz_valute">
-                    %for valuta in vse_valute:
+                <select id="valuta" name="valuta">
+                    %for valuta in valute:
                     <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                     %end
                 </select>
             </th>
-            <th><input id="kolicina" name="kolicina" type="number"/></th>
+            <th><input id="kolicina" name="kolicina" type="number" required
+                oninput="this.setCustomValidity('')"
+                oninvalid="this.setCustomValidity('Obvezno polje')"/></th>
             <th>
-                <input type="date" id="datum" name="datum_D"
+                <input type="date" id="datum" name="datum"
                 value="{{datum}}"
                 min="2010-01-01" max="{{datum}}">
                 <br>
@@ -90,7 +92,7 @@
         <tr>
             <th></th>
             <th></th>
-            <th><button value='D' name='' type="submit">D</button></th>
+            <th><button value="['D',{{borza[1]}}]" name='narocilo' type="submit">D</button></th>
         </tr>
 
     </table>
@@ -107,15 +109,17 @@
         </tr>
         <tr>
             <th>
-                <select id="iz_valute" name="iz_valute">
+                <select id="valuta" name="valuta">
                     %for valuta in valute:
                     <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                     %end
                 </select>
             </th>
-            <th><input id="kolicina" name="kolicina" type="number"/></th>
+            <th><input id="kolicina" name="kolicina" type="number" required
+                oninput="this.setCustomValidity('')"
+                oninvalid="this.setCustomValidity('Obvezno polje')"/></th>
             <th>
-                <input type="date" id="datum" name="datum_W"
+                <input type="date" id="datum" name="datum"
                 value="{{datum}}"
                 min="2010-01-01" max="{{datum}}">
                 <br>
@@ -124,7 +128,7 @@
         <tr>
             <th></th>
             <th></th>
-            <th><button value='W' name='' type="submit">W</button></th>
+            <th><button value="['W',{{borza[1]}}]" name='narocilo' type="submit">W</button></th>
         </tr>
 
     </table>

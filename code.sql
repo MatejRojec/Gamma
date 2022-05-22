@@ -110,3 +110,55 @@ SELECT t5.uporabnik_id,
             left join devizni_tecaj dt
                 on dt.osnovna_valuta = t5.valuta
                 AND date(datum_razmerja) = date(now())
+
+
+-- stanje denarnice na borzi 1 za denarnico ADA
+
+WITH t0 AS (SELECT *
+FROM transakcija
+WHERE uporabnik_id = 1001),
+
+t1 AS (SELECT uporabnik_id,
+                    borza_id,
+                    iz_valute AS valuta,
+                    sum(iz_kolicine) AS x
+FROM t0 AS trx
+GROUP BY 1, 2, 3),
+
+t2 AS (SELECT uporabnik_id,
+               borza_id,
+               v_valuto AS valuta,
+               sum(v_kolicino) AS y
+FROM t0 AS trx 
+GROUP BY 1, 2, 3),
+
+t3 AS (SELECT t1.uporabnik_id,
+               b.id_borze,
+               t1.valuta, 
+               COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+FROM t1 
+     FULL JOIN t2 ON t1.uporabnik_id = t2.uporabnik_id 
+          AND t1.valuta = t2.valuta 
+          AND t1.borza_id = t2.borza_id
+     LEFT JOIN borza AS b ON b.id_borze = t1.borza_id
+WHERE t1.valuta <> ''),
+
+t4 AS (SELECT t2.uporabnik_id,
+               b.id_borze,
+               t2.valuta, 
+               COALESCE(y, 0) - COALESCE(x, 0) AS amount       
+FROM t2 
+     FULL JOIN t1 ON t1.uporabnik_id = t2.uporabnik_id 
+          AND t1.valuta = t2.valuta 
+          AND t1.borza_id = t2.borza_id
+     LEFT JOIN borza AS b ON b.id_borze = t2.borza_id
+WHERE t2.valuta <> ''),
+
+t5 as(     
+SELECT * FROM t3 
+UNION 
+SELECT * FROM t4)
+
+SELECT t5.amount
+FROM t5 
+WHERE t5.id_borze = 1 AND valuta = 'ADA'

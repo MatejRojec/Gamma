@@ -1,6 +1,6 @@
 
 from bottle import *
-from auth import *
+from auth_public import *
 import hashlib
 from bottleext import *
 from datetime import date
@@ -11,9 +11,16 @@ from datetime import date
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
+import os
+
+# privzete nastavitve
+SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
+RELOADER = os.environ.get('BOTTLE_RELOADER', True)
+DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
+
 
 # PRIKLOP NA BAZO
-conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+conn = psycopg2.connect(database=db, host=host, user=user, password=password, port=DB_PORT)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 # Odkomentiraj, če želiš sporočila o napakah
 debug(True)  # za izpise pri razvoju
@@ -411,5 +418,5 @@ def odjava():
     #response.delete_cookie("id", path='/')
     redirect(url('index'))
 
-run(host='localhost', port=8080, reloader=True)
+run(host='localhost', port=SERVER_PORT, reloader=RELOADER)
 

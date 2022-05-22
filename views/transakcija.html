@@ -2,8 +2,9 @@
 % setdefault('naslov', 'Transakcija')
 % rebase('base.html', napaka=napaka, naslov=naslov)
 <script>
-    function myFunction() {
-        confirm("Tu bo pregled vnesenega");
+    function myFunction() { 
+        var izpis = "Tu bodo informacije o narejeni transakciji";
+        confirm(izpis);
     }
 </script>
 
@@ -92,12 +93,15 @@
         <tr>
             <th></th>
             <th></th>
-            <th><button value="['D',{{borza[1]}}]" name='narocilo' type="submit">D</button></th>
+            <th><button value="D" name='narocilo' type="submit">D</button></th>
         </tr>
 
     </table>
 </details>
+</form>
 
+
+<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post"></form>
 
 <details>
     <summary><b>Withdrawal</b></summary>
@@ -128,7 +132,7 @@
         <tr>
             <th></th>
             <th></th>
-            <th><button value="['W',{{borza[1]}}]" name='narocilo' type="submit">W</button></th>
+            <th><button value="W" name='narocilo' type="submit">W</button></th>
         </tr>
 
     </table>

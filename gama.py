@@ -403,7 +403,8 @@ def borze():
 
 @get('/crypto/')
 def crypto():
-    return template("crypto.html", naslov='Crypto')
+    sez = '1.5.2022,2.5.2022,3.5.2022,4.5.2022,5.5.2022,6.5.2022,7.5.2022,8.5.2022,9.5.2022,10.5.2022,11.5.2022,12.5.2022,13.5.2022,14.5.2022,15.5.2022,16.5.2022,17.5.2022,18.5.2022,19.5.2022,20.5.2022'
+    return template("crypto.html", naslov='Crypto', sez=sez)
 
 
 @get('/odjava/')

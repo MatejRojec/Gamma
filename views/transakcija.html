@@ -3,8 +3,11 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 <script>
     function myFunction() { 
+        var kolicina = document.getElementById("kolicina").value;
+        var iz_valute = document.getElementById("iz_valute").value;
+
         var izpis = "Tu bodo informacije o narejeni transakciji";
-        confirm(izpis);
+        confirm(kolicina);
     }
 </script>
 
@@ -101,10 +104,11 @@
 </form>
 
 
-<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post"></form>
+<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post">
 
 <details>
     <summary><b>Withdrawal</b></summary>
+
     <table>
         <tr>
             <th>Valuta</th>
@@ -137,7 +141,5 @@
 
     </table>
 </details>
-
-
 </form>
 

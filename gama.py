@@ -101,7 +101,6 @@ def registracija_post():
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
-    #cur.execute("UPDATE oseba SET username = ?, password = ? WHERE emso = ?", (username, zgostitev, emso))
     #response.set_cookie('username', username, secret=skrivnost)
     
     redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
@@ -190,7 +189,7 @@ def uporabnik_get(id_uporabnika):
     uporabnik_borze = cur.fetchall()
     cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta")
     valute = cur.fetchall()
-    aum = 100  
+    aum = ''  
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     napaka = nastaviSporocilo()
@@ -258,13 +257,15 @@ def transakcija_get(id_uporabnika, borza):
 
 @post('/transakcija/<id_uporabnika>/<borza>')
 def transkacija_post(id_uporabnika, borza):
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     id_uporabnika = int(id_uporabnika)
     iz_valute = request.forms.get('iz_valute')
     v_valuto = request.forms.get('v_valuto')
     iz_kolicine = float(request.forms.get('kolicina'))
     datum_transakcije = request.forms.get('datum_transakcije')
-    borza_id = request.forms.get('id_borze')
-
+    borza_id = int(request.forms.get('id_borze'))
+    cur.execute("SELECT max(id_transakcije) FROM transakcija")
+    id_transakcije = cur.fetchone()[0] + 1
     if iz_valute==v_valuto: #napaka
         nastaviSporocilo('Valuti morata biti različni, sicer transakcija ni možna!')
         redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
@@ -276,7 +277,13 @@ def transkacija_post(id_uporabnika, borza):
         """, [v_valuto, datum_transakcije])
         razmerje = float(cur.fetchone()[0])
         v_kolicino = iz_kolicine / razmerje
-        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+
+        print([id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+        cur.execute(""" 
+        INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino,iz_valute, v_valuto, tip_narocila) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        """,
+        [id_transakcije, id_uporabnika, borza_id,datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
     elif v_valuto == 'USD': 
         cur.execute("""
         SELECT valutno_razmerje FROM devizni_tecaj
@@ -284,7 +291,13 @@ def transkacija_post(id_uporabnika, borza):
         """, [iz_valute, datum_transakcije])
         razmerje = float(cur.fetchone()[0])
         v_kolicino = iz_kolicine * razmerje
-        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+
+        print([id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+        cur.execute(""" 
+        INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino,iz_valute, v_valuto, tip_narocila) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        """,
+        [id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
     else:
         cur.execute("""
         SELECT valutno_razmerje FROM devizni_tecaj
@@ -296,17 +309,21 @@ def transkacija_post(id_uporabnika, borza):
         WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
         """, [v_valuto, datum_transakcije])
         razmerje2 = float(cur.fetchone()[0])
-        v_kolicino = iz_kolicine * (razmerje1/razmerje2)
-        
-        print([10, id_uporabnika, borza_id, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+        v_kolicino = iz_kolicine * (razmerje1/razmerje2)   
+
+        print([id_transakcije, id_uporabnika, borza_id,datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+        cur.execute(""" 
+        INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino,iz_valute, v_valuto, tip_narocila) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        """,
+        [id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
+
     redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     return 
     
 
 @post('/depwith/<id_uporabnika>/<borza_id>')
 def depwith_post(id_uporabnika, borza_id):
-    print("krneki")
-
     id_uporabnika = int(id_uporabnika)
     valuta = request.forms.get('valuta')
     kolicina = float(request.forms.get('kolicina'))
@@ -315,13 +332,16 @@ def depwith_post(id_uporabnika, borza_id):
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT ime FROM borza WHERE id_borze = %s", [borza_id])
     borza = cur.fetchone()[0]
-    if narocilo[0] == "D":
-        #cur.execute(""" 
-        #       INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id,datum_cas, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
-        #       VALUES (%s,%s,%s,%s,%s,%s,%s);
-        #       """,
-        #       [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
-        print([10, id_uporabnika, int(borza_id), datum_narocila, 0, kolicina, valuta, narocilo])
+    cur.execute("SELECT max(id_transakcije) FROM transakcija")
+    id_transakcije = cur.fetchone()[0] + 1
+    if narocilo == "D":
+        print([id_transakcije, id_uporabnika, int(borza_id), datum_narocila, 0, kolicina, valuta, narocilo])
+        cur.execute(""" 
+               INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+               """,
+               [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, 0, kolicina, valuta, narocilo])
+        redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     else:
         cur.execute('''
         WITH t0 AS (SELECT *
@@ -375,16 +395,18 @@ def depwith_post(id_uporabnika, borza_id):
         ''',  [id_uporabnika, borza_id, valuta])
         stanje = cur.fetchone()[0]
         if stanje < kolicina:
-            nastaviSporocilo('Stanje na denarnici je prenizko')
+            nastaviSporocilo('Stanje na denarnici je prenizko!')
             redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
         else:
-            #cur.execute(""" 
-            #       INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datu_cas, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
-            #       VALUES (%s,%s,%s,%s,%s,%s,%s);
-            #       """,
-            #       [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
             print([10, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, narocilo])
-    return
+            cur.execute(""" 
+                   INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+                   """,
+                   [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, narocilo])
+            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+
+    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
 
 
 

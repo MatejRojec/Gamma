@@ -2,9 +2,13 @@ DROP TABLE IF EXISTS devizni_tecaj;
 DROP TABLE IF EXISTS transakcija;
 DROP TABLE IF EXISTS borza;
 DROP TABLE IF EXISTS uporabnik;
+DROP SEQUENCE IF EXISTS "ustevec";
+DROP SEQUENCE IF EXISTS "tstevec";
+
+CREATE SEQUENCE "ustevec" START 1;
 
 CREATE TABLE uporabnik (
-    id_uporabnika INTEGER PRIMARY KEY,
+    id_uporabnika INTEGER DEFAULT NEXTVAL('ustevec') PRIMARY KEY,
     ime TEXT NOT NULL,
     priimek TEXT NOT NULL,  
     spol TEXT NOT NULL,
@@ -23,8 +27,11 @@ CREATE TABLE borza (
     povezava TEXT NOT NULL
 );
 
+
+CREATE SEQUENCE "tstevec" START 1;
+
 CREATE TABLE transakcija (
-    id_transakcije INTEGER PRIMARY KEY,
+    id_transakcije INTEGER DEFAULT NEXTVAL('tstevec') PRIMARY KEY,
     uporabnik_id INTEGER REFERENCES uporabnik(id_uporabnika),
     borza_id INTEGER REFERENCES borza(id_borze),
     datum_cas TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),

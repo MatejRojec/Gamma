@@ -3,23 +3,35 @@
     
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
         <title>
             {{naslov}}
         </title>
-        <nav>
-            %znacka = 0
-            <a href="{{url('about')}}">O podjetju</a>
-            <a href="{{url('borze')}}">Borze</a>
-            <a href="{{url('crypto')}}">Crypto</a>
-            <a href="{{url('index')}}">Začetna stran</a>
-            %if znacka == 0:
-            <a href="{{url('registracija_get')}}">Registracija</a>
-            <a href="{{url('prijava_get')}}">Prijava</a>
-            %end 
-            %if znacka != 0:
-            <a href="{{url('uporabnik_get', id_uporabnika=piskotek)}}">Moj profil</a>
-            <a href="{{url('odjava')}}">Odjava</a>
-            %end
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+
+                %znacka = 0
+                <div class="container">
+
+                    <a class="navbar-brand" href="{{url('index')}}">
+                        <img src="images/logo.png" alt="Zacetna stran" width="50" height="50">
+                    </a>
+                </div>
+                
+                <a class="navbar-brand" href="{{url('about')}}">O podjetju</a>
+                <a class="navbar-brand" href="{{url('borze')}}">Borze</a>
+                <a class="navbar-brand" href="{{url('crypto')}}">Crypto</a>
+                %if znacka == 0:
+                <a class="navbar-brand" href="{{url('registracija_get')}}">Registracija</a>
+                <a class="navbar-brand" href="{{url('prijava_get')}}">Prijava</a>
+                %end 
+                %if znacka != 0:
+                <a class="navbar-brand" href="{{url('uporabnik_get', id_uporabnika=piskotek)}}">Moj profil</a>
+                <a class="navbar-brand" href="{{url('odjava')}}">Odjava</a>
+                %end
+            </div>
           </nav>
         
     </head>
@@ -31,5 +43,8 @@
         {{napaka}}
     % end
 {{!base}}
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
 </body>
 </html>

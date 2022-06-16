@@ -3,11 +3,23 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
 
+
 <form action="/prijava" method="post">
-    <span>Elektronski naslov:</span><input name='email' type='text' />
-    <br>
-    <span>Geslo:</span><input name='geslo' type='password' />
-    <br>
-    <input value='Prijava' type='submit' />
+
+<!-- za pozicijo -->
+<div class="position-absolute">
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name='email' />
+            <label for="floatingInput">Elektronski naslov</label>
+        </div>
+        <br>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name='geslo'/>
+            <label for="floatingPassword">Geslo</label>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-outline-dark">Prijava</button>
+    </div>
 </form>
 

@@ -19,6 +19,8 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 debug(True)  # za izpise pri razvoju
 
 
+
+
 skrivnost = 'laqwXUtKfHTp1SSpnkSg7VbsJtCgYS89QnvE7PedkXqbE8pPj7VeRUwqdXu1Fr1kEkMzZQAaBR93PoGWks11alfe8y3CPSKh3mEQ'
 
 napakaSporocilo = None
@@ -41,6 +43,11 @@ def hashGesla(s):
     m = hashlib.sha256()
     m.update(s.encode("utf-8"))
     return m.hexdigest()
+
+def povezi():
+    global conn
+    conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+
 
 @get('/')
 def index():
@@ -113,6 +120,7 @@ def prijava_get():
 
 @post('/prijava') # or @route('/prijava', method='POST')
 def prijava_post():
+    povezi()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     email = request.forms.get('email')
     geslo = request.forms.get('geslo')

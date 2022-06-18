@@ -2,63 +2,111 @@
 % setdefault('naslov', 'Registracija')
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="/registracija" method="post" autocomplete="off">
-    <label for="ime">Ime:</label>
-    <input id="ime" name="ime" type="text" required
-    oninput="this.setCustomValidity('')"
-    oninvalid="this.setCustomValidity('Obvezno polje')"
-    />
-    <br>
-    <label for="priimek">Priimek:</label>
-    <input id="priimek" name="priimek" type="text" required
-    oninput="this.setCustomValidity('')"
-    oninvalid="this.setCustomValidity('Obvezno polje')"
-    />
-    <br>
-
-    Spol:
-    <div>
-      <input type="radio" name="spol" value="M" checked="checked"> Moški
-      <input type="radio" name="spol" value="F"> Ženski
-    </div>
-    <br>
-  
-    <label for="rojstvo">Datum rojstva:</label>
-    <input type="date" id="rojstvo" name="datum_rojstva"
-       value="2000-01-01"
-       min="1900-01-01" max="2002-12-31" required
-       oninput="this.setCustomValidity('')"
-       oninvalid="this.setCustomValidity('Obvezno polje')">
-    <br>
-
-    <label for="drzava">Drzava:</label>
-    <input id="drzava" name="drzava" type="text" required
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"
-      />
-    <br>
-    <label for="email">Email:</label>
-    <input id="email" name="email" type="text" required
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"
-      />
-    <br>
+<form action="/registracija" method="post" autocomplete="off" 
+style=" margin: auto; margin-top: 100px; width: 30%;">
     
-    <label for="geslo">Geslo:</label>
-    <input id="geslo" name="geslo" type="geslo" required
+  <div class="row g-3 needs-validation was-validated" >
+    <div class="input-group "  >
+      <span class="input-group-text" id="basic-addon1">Ime</span>
+      <input type="text" name="ime" class="form-control" aria-label="Username" 
+      aria-describedby="basic-addon1" id="validationTooltip01" 
+      required 
       oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"
-      />
+      oninvalid="this.setCustomValidity('Obvezno polje')">
+    </div>
+  </div>
     <br>
-    <label for="geslo2">Ponovno geslo:</label>
-    <input id="geslo2" name="geslo2" type="password" required
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"
-      />
-    <br>
-    <button type="submit">
-      Registriraj se!
-    </button>
+  <div class="row g-3 needs-validation was-validated">
+    <div class="input-group ">
+      <span class="input-group-text" id="basic-addon1">Priimek</span>
+        <input type="text" name="priimek" class="form-control" aria-label="Username" 
+        aria-describedby="basic-addon1" id="validationTooltip01" 
+        required 
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')">
+      </div>
+  </div>
+    
+  <br>
 
-  
+  <div class="row g-3 needs-validation was-validated">
+    <div class="col-md-6">
+
+      <div class="input-group ">
+        <span class="input-group-text">Spol</span>
+        <input type="radio" class="btn-check" name="spol" value="M" id="option1" checked>
+        <label class="btn btn-secondary" for="option1">Mošlki</label>
+        
+        <input type="radio" class="btn-check" name="spol" value="F" id="option2" >
+        <label class="btn btn-secondary" for="option2">Ženska</label>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+
+      <div class="input-group ">
+        <span class="input-group-text" id="basic-addon1">Datum rojstva</span>
+        <input class="input-group-text" type="date" name="datum_rojstva"
+        value="2000-01-01"
+        min="1900-01-01" max="2002-12-31" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')">
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="row g-3 needs-validation was-validated">
+    <div class="input-group">
+        <span class="input-group-text" id="basic-addon1">Država</span>
+        <input type="text" class="form-control"  name="drzava" 
+        aria-label="Country" 
+        aria-describedby="basic-addon1" id="validationTooltip01" 
+        required 
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')">
+      </div>
+  </div> 
+    <br>
+  <div class="row g-3 needs-validation was-validated">
+    <div class="input-group">
+      <span class="input-group-text" id="basic-addon1">Email</span>
+      <input type="text" class="form-control" name="email"
+      aria-label="Email" 
+      aria-describedby="basic-addon1" id="validationTooltip01" required 
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')">
+    </div>
+  </div>
+  <br>  
+  <div class="row g-3 needs-validation was-validated">
+    <div class="input-group ">
+      <span class="input-group-text" id="basic-addon1">Geslo</span>
+      <input type="password" class="form-control" name="geslo"
+      aria-label="Password" 
+      aria-describedby="basic-addon1" id="validationTooltip01" 
+      required 
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')">
+    </div>
+  </div>
+  <br>
+  <div class="row g-3 needs-validation was-validated">
+    <div class="input-group">
+      <span class="input-group-text" id="basic-addon1">Ponovi geslo</span>
+      <input type="password" class="form-control" name="geslo2"
+      aria-label="Password" 
+      aria-describedby="basic-addon1" id="validationTooltip01" required 
+      oninput="this.setCustomValidity('')"
+      oninvalid="this.setCustomValidity('Obvezno polje')">
+    </div>
+  </div>
+  <br>
+  <div class="row g-3 needs-validation was-validated">
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <button type="submit" class="btn btn-secondary">
+        Registriraj se!
+      </button>
+    </div>
+  </div>
+    
 </form>

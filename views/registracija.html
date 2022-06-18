@@ -3,10 +3,10 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
 <form action="/registracija" method="post" autocomplete="off" 
-style=" margin: auto; margin-top: 100px; width: 30%;">
-    
+style=" margin: auto; margin-top: 40px; width: 30%;">
+
   <div class="row g-3 needs-validation was-validated" >
-    <div class="input-group "  >
+    <div class="input-group" >
       <span class="input-group-text" id="basic-addon1">Ime</span>
       <input type="text" name="ime" class="form-control" aria-label="Username" 
       aria-describedby="basic-addon1" id="validationTooltip01" 
@@ -17,7 +17,7 @@ style=" margin: auto; margin-top: 100px; width: 30%;">
   </div>
     <br>
   <div class="row g-3 needs-validation was-validated">
-    <div class="input-group ">
+    <div class="input-group" >
       <span class="input-group-text" id="basic-addon1">Priimek</span>
         <input type="text" name="priimek" class="form-control" aria-label="Username" 
         aria-describedby="basic-addon1" id="validationTooltip01" 
@@ -70,7 +70,7 @@ style=" margin: auto; margin-top: 100px; width: 30%;">
   <div class="row g-3 needs-validation was-validated">
     <div class="input-group">
       <span class="input-group-text" id="basic-addon1">Email</span>
-      <input type="text" class="form-control" name="email"
+      <input type="email" class="form-control" name="email"
       aria-label="Email" 
       aria-describedby="basic-addon1" id="validationTooltip01" required 
       oninput="this.setCustomValidity('')"
@@ -103,7 +103,7 @@ style=" margin: auto; margin-top: 100px; width: 30%;">
   <br>
   <div class="row g-3 needs-validation was-validated">
     <div class="d-grid gap-2 col-6 mx-auto">
-      <button type="submit" class="btn btn-secondary">
+      <button type="submit" class="btn btn-outline-dark">
         Registriraj se!
       </button>
     </div>

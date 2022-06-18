@@ -18,7 +18,7 @@ def ustvari_tabele():
     conn.commit()
     print("Uspesno ustvaril tabele!")
 
-#ustvari_tabele()
+# ustvari_tabele()
 
 def pobrisi_tabelo(tabela):
     cur.execute("""

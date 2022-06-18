@@ -451,8 +451,17 @@ def borze():
 
 @get('/crypto/')
 def crypto():
+    conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
+    cur.execute('''
+    SELECT * FROM devizni_tecaj
+    WHERE osnovna_valuta = 'BTC' and  datum_razmerja between now() - interval '1 week' and now()
+    ''')
+    data = cur.fetchall()
+
     sez = '1.5.2022,2.5.2022,3.5.2022,4.5.2022,5.5.2022,6.5.2022,7.5.2022,8.5.2022,9.5.2022,10.5.2022,11.5.2022,12.5.2022,13.5.2022,14.5.2022,15.5.2022,16.5.2022,17.5.2022,18.5.2022,19.5.2022,20.5.2022'
-    return template("crypto.html", naslov='Crypto', sez=sez)
+    vrednosti = '7,8,8,9,9,9,10,11,14,12,7,5,4,6,7,9,10,11,14,12'
+    return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti)
 
 
 @get('/odjava/')

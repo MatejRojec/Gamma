@@ -63,3 +63,39 @@ def uvozSQL(tabela):
     print("Uspesno nalozil podatke!")
 
 #uvozSQL("uporabniki/uporabnik.sql")
+
+
+
+#cur.execute(""" 
+#    INSERT INTO denarnica (id_denarnice, valuta, uporabnik_id, borza_id) 
+#    VALUES (%s, %s, %s, %s)
+#""",[4, 'ADA', 1001, 'bitstamp'])
+#conn.commit()
+#
+#cur.execute(""" 
+#    SELECT * FROM denarnica
+#""")
+#print(cur.fetchall())
+
+#cur.execute(""" 
+#    INSERT INTO transakcija (id_transakcije, denarnica_id, iz_kolicine, v_kolicino, iz_valute, v_valuto) 
+#    VALUES (%s, %s, %s, %s, %s, %s)
+#""",[9, 3, 5, 700, 'BTC', 'USD'])
+#conn.commit()
+#
+#cur.execute(""" 
+#    SELECT * FROM transakcija
+#""")
+#print(cur.fetchall())
+
+#cur.execute(""" 
+#    INSERT INTO tip_narocila (transakcija_id, vrsta_narocila, podvrsta_narocila) 
+#    VALUES (%s, %s, %s)
+#""",[9, 'T', 'SELL'])
+#conn.commit()
+
+
+
+
+
+

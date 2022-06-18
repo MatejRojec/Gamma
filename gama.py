@@ -54,7 +54,16 @@ def index():
     znacka = id_uporabnik()
     print(znacka)
     return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
-    
+
+
+# za namene testeranej stila
+@get('/test')
+def test():
+    return template('test.html')
+
+
+
+
 @get('/registracija')
 def registracija_get():
     napaka = nastaviSporocilo()
@@ -102,7 +111,7 @@ def registracija_post():
         cur.execute("""INSERT INTO 
         uporabnik (ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
         VALUES  (%s, %s, %s, %s, %s, %s, %s) """,
-        [ ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
+        [ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
         conn.commit()
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 

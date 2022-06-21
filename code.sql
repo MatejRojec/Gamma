@@ -32,7 +32,7 @@ t2 AS (SELECT uporabnik_id,
                borza_id,
                v_valuto AS valuta,
                sum(v_kolicino) AS y
-FROM transakcija AS trx
+FROM transakcija AS trx    
 WHERE uporabnik_id = 1001 
 GROUP BY 1, 2, 3),
 t3 AS (SELECT t1.uporabnik_id,
@@ -178,4 +178,15 @@ where osnovna_valuta  = 'BTC'
 and kotirajoca_valuta  = 'USD'
 group by 1,2
 order by 1,2
+
+-- AUM per client
+
+WITH t0 AS (SELECT *
+            FROM transakcija
+            WHERE uporabnik_id = 1)
+
+SELECT SUM(COALESCE(v_kolicino * er2.valutno_razmerje, 0)) - SUM(COALESCE(iz_kolicine * er1.valutno_razmerje, 0)) as client_aum
+FROM t0
+         LEFT JOIN devizni_tecaj as er1 on er1.osnovna_valuta = iz_valute
+         LEFT JOIN devizni_tecaj as er2 on er2.osnovna_valuta = v_valuto
 

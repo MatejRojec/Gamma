@@ -207,7 +207,16 @@ def uporabnik_get(id_uporabnika):
     uporabnik_borze = cur.fetchall()
     cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta")
     valute = cur.fetchall()
-    aum = ''  
+    cur.execute('''
+    WITH t0 AS (SELECT *
+            FROM transakcija
+            WHERE uporabnik_id = %s)
+    SELECT SUM(COALESCE(v_kolicino * er2.valutno_razmerje, 0)) - SUM(COALESCE(iz_kolicine * er1.valutno_razmerje, 0)) as client_aum
+    FROM t0
+            LEFT JOIN devizni_tecaj as er1 on er1.osnovna_valuta = iz_valute and er1.datum_razmerja = datum_cas	
+            LEFT JOIN devizni_tecaj as er2 on er2.osnovna_valuta = v_valuto and er2.datum_razmerja = datum_cas
+    ''', [id_uporabnika])
+    aum = cur.fetchone()[0]  
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     napaka = nastaviSporocilo()
@@ -232,6 +241,7 @@ def uporabnik_post(id_uporabnika):
         VALUES (%s,%s,%s,%s,%s,%s,%s);
         """,
         [id_transakcije, id_uporabnika, borza_id, 0, 0, "USD", "A"])
+        #conn.commit()
         redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     else:
         cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
@@ -252,7 +262,7 @@ def uporabnik_post(id_uporabnika):
             VALUES (%s,%s,%s,%s,%s,%s,%s);
             """,
             [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
-            conn.commit()
+            #conn.commit()
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
             return
 
@@ -426,10 +436,10 @@ def depwith_post(id_uporabnika, borza_id):
         else:
             print([10, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, narocilo])
             cur.execute(""" 
-                   INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
-                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
+                   INSERT INTO transakcija (id_transakcije, uporabnik_id, borza_id, datum_cas, iz_kolicine, v_kolicino, iz_valute, v_valuto, tip_narocila) 
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
                    """,
-                   [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, narocilo])
+                   [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, valuta, narocilo])
             #conn.commit()
             redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
     redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))

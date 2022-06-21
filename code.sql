@@ -162,3 +162,20 @@ SELECT * FROM t4)
 SELECT t5.amount
 FROM t5 
 WHERE t5.id_borze = 1 AND valuta = 'ADA'
+
+
+-- total Bitcoin price per month
+
+select  EXTRACT(
+    YEAR FROM datum_razmerja
+    ) AS year
+, EXTRACT(
+    MONTH FROM datum_razmerja
+    ) AS month
+, AVG(valutno_razmerje) as BTC_price
+ from 	devizni_tecaj
+where osnovna_valuta  = 'BTC'
+and kotirajoca_valuta  = 'USD'
+group by 1,2
+order by 1,2
+

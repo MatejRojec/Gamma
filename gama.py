@@ -29,6 +29,37 @@ def nastaviSporocilo(sporocilo=None):
     napakaSporocilo = sporocilo
     return staro
 
+'''
+def nastaviSporocilo(sporocilo = None):
+    staro = request.get_cookie("sporocilo", secret=skrivnost)
+    if sporocilo is None:
+        response.delete_cookie('sporocilo', path="/")
+    else:
+        response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
+    return staro 
+
+def preveriUporabnika(): 
+    username = request.get_cookie("username", secret=skrivnost)
+    if username:
+        cur = conn.cursor()
+        oseba = None
+        try: 
+            cur.execute("SELECT * FROM uporabnik WHERE username = %s", (username, ))
+            oseba = cur.fetchone()
+        except:
+            oseba = None
+        if oseba: 
+            return oseba
+    redirect(url('prijava_get'))
+
+def hashGesla(s):
+    m = hashlib.sha256()
+    m.update(s.encode("utf-8"))
+    return m.hexdigest()
+
+
+'''
+
 #funkcija za piškotke
 def id_uporabnik():
     if request.get_cookie("id", secret = skrivnost):

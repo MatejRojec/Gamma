@@ -3,11 +3,7 @@ from bottle import *
 from auth import *
 import hashlib
 from bottleext import *
-from datetime import date
-
-
-
-
+from datetime import date    
 import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
@@ -18,8 +14,11 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 # Odkomentiraj, če želiš sporočila o napakah
 debug(True)  # za izpise pri razvoju
 
+static_dir = "./static"
 
-
+@route("/static/<filename:path>")
+def static(filename):
+    return static_file(filename, root=static_dir)
 
 skrivnost = 'laqwXUtKfHTp1SSpnkSg7VbsJtCgYS89QnvE7PedkXqbE8pPj7VeRUwqdXu1Fr1kEkMzZQAaBR93PoGWks11alfe8y3CPSKh3mEQ'
 
@@ -61,7 +60,9 @@ def index():
 def test():
     return template('test.html')
 
-
+@get("/views/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
+def img(filepath):
+    return static_file(filepath, root="views/images")
 
 
 @get('/registracija')
@@ -480,4 +481,3 @@ def odjava():
     redirect(url('index'))
 
 run(host='localhost', port=8080, reloader=True)
-

@@ -2,7 +2,7 @@
 % setdefault('naslov', 'Registracija')
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
-<form action="/registracija" method="post" autocomplete="off" 
+<form action="{{url('registracija_post')}} method="post" autocomplete="off" 
 style=" margin: auto; margin-top: 40px; width: 30%;">
 
   <div class="row g-3 needs-validation was-validated" >

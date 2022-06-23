@@ -12,7 +12,7 @@
 </script>
 
 
-<form action="{{url('transkacija_post', id_uporabnika=id_uporabnika, borza=borza[1])}}" method="post">
+<form action="{{url('transkacija_post', borza=borza[1])}}" method="post">
     <table>
         
         <tr>
@@ -64,7 +64,7 @@
 <br>
 
 
-<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post">
+<form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
 
 <details>
     <summary><b>Depozit</b></summary>
@@ -104,7 +104,7 @@
 </form>
 
 
-<form action="{{url('depwith_post',id_uporabnika=id_uporabnika, borza_id=borza[0])}}" method="post">
+<form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
 
 <details>
     <summary><b>Withdrawal</b></summary>

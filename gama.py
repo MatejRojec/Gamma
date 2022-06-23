@@ -22,14 +22,6 @@ def static(filename):
 
 skrivnost = 'laqwXUtKfHTp1SSpnkSg7VbsJtCgYS89QnvE7PedkXqbE8pPj7VeRUwqdXu1Fr1kEkMzZQAaBR93PoGWks11alfe8y3CPSKh3mEQ'
 
-napakaSporocilo = None
-def nastaviSporocilo(sporocilo=None):
-    global napakaSporocilo
-    staro = napakaSporocilo
-    napakaSporocilo = sporocilo
-    return staro
-
-'''
 def nastaviSporocilo(sporocilo = None):
     staro = request.get_cookie("sporocilo", secret=skrivnost)
     if sporocilo is None:
@@ -38,35 +30,32 @@ def nastaviSporocilo(sporocilo = None):
         response.set_cookie('sporocilo', sporocilo, path="/", secret=skrivnost)
     return staro 
 
+
 def preveriUporabnika(): 
-    username = request.get_cookie("username", secret=skrivnost)
-    if username:
-        cur = conn.cursor()
+    conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+    id_uporabnika = request.get_cookie("id", secret=skrivnost)
+    if id_uporabnika:
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         oseba = None
         try: 
-            cur.execute("SELECT * FROM uporabnik WHERE username = %s", (username, ))
-            oseba = cur.fetchone()
+            cur.execute("SELECT id_uporabnika FROM uporabnik WHERE id_uporabnika = %s", [id_uporabnika])
+            id_uporabnika = cur.fetchone()[0]
         except:
-            oseba = None
-        if oseba: 
-            return oseba
+            id_uporabnika = None
+        if id_uporabnika: 
+            return id_uporabnika
     redirect(url('prijava_get'))
 
-def hashGesla(s):
-    m = hashlib.sha256()
-    m.update(s.encode("utf-8"))
-    return m.hexdigest()
 
 
-'''
 
 #funkcija za piškotke
-def id_uporabnik():
-    if request.get_cookie("id", secret = skrivnost):
-        piskotek = request.get_cookie("id", secret = skrivnost)
-        return piskotek
-    else:
-        return 0
+#def id_uporabnik():
+#    if request.get_cookie("id", secret = skrivnost):
+#        piskotek = request.get_cookie("id", secret = skrivnost)
+#        return piskotek
+#    else:
+#        return 0
 
 
 def hashGesla(s):
@@ -81,7 +70,8 @@ def povezi():
 
 @get('/')
 def index():
-    znacka = id_uporabnik()
+    #znacka = id_uporabnik()
+    znacka = 0
     print(znacka)
     return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
 
@@ -141,18 +131,17 @@ def registracija_post():
     zgostitev = hashGesla(geslo)
     print([id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
     try:
-        cur.execute("""INSERT INTO 
-        uporabnik (id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
+        cur.execute("""
+        INSERT INTO uporabnik (id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
         VALUES  (%s, %s, %s, %s, %s, %s, %s, %s) """,
         [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
-
         conn.commit()
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
-    #response.set_cookie('username', username, secret=skrivnost)
 
-    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+    response.set_cookie('id', id_uporabnika, secret=skrivnost)
+    redirect(url('uporabnik_get'))
 
 @get('/prijava') # lahko tudi @route('/prijava')
 def prijava_get():
@@ -161,7 +150,6 @@ def prijava_get():
 
 @post('/prijava') # or @route('/prijava', method='POST')
 def prijava_post():
-    povezi()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     email = request.forms.get('email')
     geslo = request.forms.get('geslo')
@@ -172,21 +160,22 @@ def prijava_post():
     except:
         hashBaza = None
     if hashBaza is None:
-        napaka = nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
         redirect(url('prijava_get'))
-        return
+
     if hashGesla(geslo) != hashBaza:
-        napaka = nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
+        nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
         redirect(url('prijava_get'))
-        return    
+    
     cur.execute('SELECT id_uporabnika FROM uporabnik WHERE email = %s', [email])
     id_uporabnika = cur.fetchone()[0]
-    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+    response.set_cookie('id', id_uporabnika, secret=skrivnost)
+    redirect(url('uporabnik_get'))
 
 
-@get('/uporabnik/<id_uporabnika>')
-def uporabnik_get(id_uporabnika):
-    id_uporabnika = int(id_uporabnika)
+@get('/uporabnik')
+def uporabnik_get():
+    id_uporabnika = preveriUporabnika()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute('''
     WITH t1 AS (SELECT uporabnik_id,
@@ -252,12 +241,12 @@ def uporabnik_get(id_uporabnika):
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     napaka = nastaviSporocilo()
-    return template('uporabnik.html',aum = aum, data = data , id_uporabnika = id_uporabnika, uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka)
+    return template('uporabnik.html',aum = aum, data = data , uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka)
 
 
-@post('/uporabnik/<id_uporabnika>')
-def uporabnik_post(id_uporabnika):
-    id_uporabnika = int(id_uporabnika)
+@post('/uporabnik')
+def uporabnik_post():
+    id_uporabnika = preveriUporabnika()
     denarnica = request.forms.get('valuta')
     ime_borze = request.forms.get('ime_borze')
     borza_id = request.forms.get("id_borze")
@@ -274,7 +263,7 @@ def uporabnik_post(id_uporabnika):
         """,
         [id_transakcije, id_uporabnika, borza_id, 0, 0, "USD", "A"])
         #conn.commit()
-        redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+        redirect(url('uporabnik_get'))
     else:
         cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
         borza_id = cur.fetchone()[0]
@@ -286,7 +275,7 @@ def uporabnik_post(id_uporabnika):
         uporabnik_valute = cur.fetchall()
         if [denarnica] in uporabnik_valute:
             nastaviSporocilo("Ta denarnica že obstaja")
-            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+            redirect(url('uporabnik_get'))
         else:
             print(id_transakcije,id_uporabnika, borza_id, 0, 0, denarnica, "A")
             cur.execute(""" 
@@ -295,12 +284,13 @@ def uporabnik_post(id_uporabnika):
             """,
             [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
             #conn.commit()
-            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
-            return
+            redirect(url('uporabnik_get'))
 
 
-@get('/transakcija/<id_uporabnika>/<borza>')
-def transakcija_get(id_uporabnika, borza):
+
+@get('/transakcija/<borza>')
+def transakcija_get(borza):
+    id_uporabnika = preveriUporabnika()
     today = date.today()
     datum = today.strftime("%Y-%m-%d")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -315,14 +305,13 @@ def transakcija_get(id_uporabnika, borza):
     valute = cur.fetchall()
     #valute = [['USD'], ['BTC'], ['ETH']]  
     napaka = nastaviSporocilo()
-    return template("transakcija.html", 
-    naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, id_uporabnika=id_uporabnika, napaka=napaka)
+    return template("transakcija.html", naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka)
 
 
-@post('/transakcija/<id_uporabnika>/<borza>')
-def transkacija_post(id_uporabnika, borza):
+@post('/transakcija/<borza>')
+def transkacija_post(borza):
+    id_uporabnika = preveriUporabnika()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    id_uporabnika = int(id_uporabnika)
     iz_valute = request.forms.get('iz_valute')
     v_valuto = request.forms.get('v_valuto')
     iz_kolicine = float(request.forms.get('kolicina'))
@@ -332,14 +321,15 @@ def transkacija_post(id_uporabnika, borza):
     id_transakcije = cur.fetchone()[0] + 1
     if iz_valute==v_valuto: #napaka
         nastaviSporocilo('Valuti morata biti različni, sicer transakcija ni možna!')
-        redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
+        redirect(url('transakcija_get', borza=borza))
         return
     elif iz_valute == 'USD': 
         cur.execute("""
         SELECT valutno_razmerje FROM devizni_tecaj
         WHERE osnovna_valuta = %s AND datum_razmerja = %s; 
         """, [v_valuto, datum_transakcije])
-        razmerje = float(cur.fetchone()[0])
+        razmerje = cur.fetchone()[0]
+        razmerje = float(razmerje) if razmerje else 0
         v_kolicino = iz_kolicine / razmerje
 
         print([id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
@@ -385,13 +375,13 @@ def transkacija_post(id_uporabnika, borza):
         [id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
         #conn.commit()
 
-    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
-    return 
+    redirect(url('uporabnik_get'))
+
     
 
-@post('/depwith/<id_uporabnika>/<borza_id>')
-def depwith_post(id_uporabnika, borza_id):
-    id_uporabnika = int(id_uporabnika)
+@post('/depwith/<borza_id>')
+def depwith_post(borza_id):
+    id_uporabnika = preveriUporabnika()
     valuta = request.forms.get('valuta')
     kolicina = float(request.forms.get('kolicina'))
     datum_narocila = request.forms.get('datum')
@@ -409,7 +399,7 @@ def depwith_post(id_uporabnika, borza_id):
                """,
                [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, 0, kolicina, valuta, narocilo])
         #conn.commit()
-        redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+        redirect(url('uporabnik_get'))
     else:
         cur.execute('''
         WITH t0 AS (SELECT *
@@ -464,7 +454,7 @@ def depwith_post(id_uporabnika, borza_id):
         stanje = cur.fetchone()[0]
         if stanje < kolicina:
             nastaviSporocilo('Stanje na denarnici je prenizko!')
-            redirect(url('transakcija_get', id_uporabnika=id_uporabnika, borza=borza))
+            redirect(url('transakcija_get', borza=borza))
         else:
             print([10, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, narocilo])
             cur.execute(""" 
@@ -473,8 +463,7 @@ def depwith_post(id_uporabnika, borza_id):
                    """,
                    [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, valuta, narocilo])
             #conn.commit()
-            redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
-    redirect(url('uporabnik_get', id_uporabnika=id_uporabnika))
+            redirect(url('uporabnik_get'))
 
 
 
@@ -508,7 +497,7 @@ def crypto():
 
 @get('/odjava/')
 def odjava():
-    #response.delete_cookie("id", path='/')
+    response.delete_cookie("id", path='/')
     redirect(url('index'))
 
 run(host='localhost', port=8080, reloader=True)

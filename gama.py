@@ -1,7 +1,7 @@
 
 from bottle import *
-#from auth import *
-from auth_public import *
+from auth import *
+#from auth_public import *
 import hashlib
 from bottleext import *
 from datetime import date    
@@ -9,8 +9,16 @@ import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
 
+import os
+
+# privzete nastavitve
+SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
+RELOADER = os.environ.get('BOTTLE_RELOADER', True)
+DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
+
+
 # PRIKLOP NA BAZO
-conn = psycopg2.connect(database=db, host=host, user=user, password=password)
+conn = psycopg2.connect(database=db, host=host, user=user, password=password, port=DB_PORT)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 # Odkomentiraj, če želiš sporočila o napakah
 debug(True)  # za izpise pri razvoju
@@ -130,7 +138,7 @@ def registracija_post():
         INSERT INTO uporabnik (id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
         VALUES  (%s, %s, %s, %s, %s, %s, %s, %s) """,
         [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
-        conn.commit()
+        #conn.commit()
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
@@ -238,8 +246,6 @@ def uporabnik_get():
     ''', [id_uporabnika])
     aum = cur.fetchone()[0]  
     aum = aum if aum else 0
-    #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
-    #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     napaka = nastaviSporocilo()
     return template('uporabnik.html',aum = aum, data = data , uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka, znacka=znacka)
 
@@ -304,7 +310,6 @@ def transakcija_get(borza):
     GROUP BY v_valuto
     """, [int(id_uporabnika), int(borza_id)])
     valute = cur.fetchall()
-    #valute = [['USD'], ['BTC'], ['ETH']]  
     napaka = nastaviSporocilo()
     return template("transakcija.html", naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka, znacka=znacka)
 
@@ -504,4 +509,4 @@ def odjava():
     response.delete_cookie("id", path='/')
     redirect(url('index'))
 
-run(host='localhost', port=8080, reloader=True)
+run(host='localhost', port=SERVER_PORT, reloader=RELOADER)

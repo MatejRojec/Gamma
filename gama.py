@@ -1,7 +1,6 @@
 
 from bottle import *
-from auth import *
-#from auth_public import *
+from auth_public import *
 import hashlib
 from bottleext import *
 from datetime import date    

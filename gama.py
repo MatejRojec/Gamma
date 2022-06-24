@@ -75,11 +75,6 @@ def index():
     return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
 
 
-# za namene testeranej stila
-@get('/test')
-def test():
-    return template('test.html')
-
 @get("/views/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
 def img(filepath):
     return static_file(filepath, root="views/images")

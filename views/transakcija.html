@@ -14,189 +14,149 @@
 </script>
 
 
-
-<div class="container">
-    <div class="row justify-content-md-center ">
-        <div class="col border border-dark rounded p-3 m-3">
-            <div class="row">
-                <div class="col">
+<form action="{{url('transkacija_post', borza=borza[1])}}" method="post">
+    <div class="d-flex justify-content-center">
+        <div class="container border border-dark rounded p-3 m-3" style="width: 60%;">
+            <div class="row p-2">
+                <div class="col d-flex justify-content-center">
                     <h4 >
-                        Prenesi valute
+                        Prenesi valuto
                     </h4>
                 </div>
+            </div>
             <div class="row">
-                <div class="col">
-                    <div class="input-group mb-3" style="width: 10cm;" >
-                        <label class="input-group-text" for="inputGroupSelect01">Količina</label>
-                        <input type="number" name="ime" class="form-control"  id="inputGroupSelect01" style="width: 5cm;">
-                        <select  name="iz_valute" class="form-select" id="inputGroupSelect01">
+                <div class="col d-flex justify-content-center">
+                    <div class="input-group mb-3" >
+                        <label class="input-group-text" for="inputGroupSelect01" >Količina</label>
+                        <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect01" style="width: 5cm;" required
+                        oninput="this.setCustomValidity('')"
+                        oninvalid="this.setCustomValidity('Obvezno polje')"
+                        >
+                        <select  name="iz_valute" class="form-select" id="inputGroupSelect01" style="width: auto;">
                             %for valuta in valute:
                             <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                             %end
                         </select>
                     </div>
                 </div>
-                <div class="col">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+                <div class="col d-flex justify-content-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
                     </svg>
                 </div>
-                <div class="col md-auto">
-                    <select name="v_valuto" class="form-select" style="width: 3cm;">
+                <div class="col d-flex justify-content-center">
+                    <select name="v_valuto" class="form-select" style="width: auto; height: 1cm;">
                         %for valuta in valute:
                         <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                         %end
                     </select>
                 </div>
-
+            </div>    
+            <div class="row p-2">
+                <div class="col d-flex justify-content-center">
+                    <input type="date" name="datum_transakcije"
+                    value="{{datum}}"
+                    min="2010-01-01" max="{{datum}}"
+                    class="input-group-text">
+                </div>
             </div>
-                <div class="col">Column</div>
+            <div class="row p-2">
+                <div class="col d-flex justify-content-center">
+                    <button value='{{borza[0]}}' name='id_borze' type="submit" onclick="myFunction()" class="btn btn-outline-dark">
+                        Zabeleži transakcijo
+                    </button>
+                </div>
+            </div> 
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+<div class="d-flex justify-content-center">
+    <div class="container p-3 m-3" style="width: 60%;">
+        <div class="row p-2">
+            <div class="col d-flex justify-content-center  border border-dark rounded p-3 m-3">
+                <form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
+                    <details>
+                        <summary>
+                            <b>Depozit</b>
+                        </summary>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <div class="input-group mb-3" >
+                                    <label class="input-group-text" for="inputGroupSelect02">Količina</label>
+                                    <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect02" style="width: 5cm;" required
+                                    oninput="this.setCustomValidity('')"
+                                    oninvalid="this.setCustomValidity('Obvezno polje')">
+                                    <select  name="valuta" class="form-select" id="inputGroupSelect02" style="width: auto;">
+                                        %for valuta in valute:
+                                        <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                                        %end
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <label class="input-group-text" for="inputGroupSelect03" >Datum</label>
+                                <input type="date" id="inputGroupSelect03" class="input-group-text" name="datum" value="{{datum}}" min="2010-01-01" max="{{datum}}">
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <button value="D" name='narocilo' type="submit" class="btn btn-outline-dark">
+                                    D
+                                </button>
+                            </div>
+                        </div>
+                    </details>
+                </form>
             </div>
 
+            <div class="col d-flex justify-content-center  border border-dark rounded p-3 m-3">
+                
+                <form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
+                    <details>
+                        <summary>
+                            <b>Withdrawal</b>
+                        </summary>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <div class="input-group mb-3" >
+                                    <label class="input-group-text" for="inputGroupSelect04" >Količina</label>
+                                    <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect04" style="width: 5cm;" required
+                                    oninput="this.setCustomValidity('')"
+                                    oninvalid="this.setCustomValidity('Obvezno polje')">
+                                    <select  name="valuta" class="form-select" id="inputGroupSelect04" style="width: auto;">
+                                        %for valuta in valute:
+                                        <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+                                        %end
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <label class="input-group-text" for="inputGroupSelect05" >Datum</label>
+                                <input type="date" id="inputGroupSelect05" class="input-group-text" name="datum" value="{{datum}}" min="2010-01-01" max="{{datum}}">
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <button value="W" name='narocilo' type="submit" class="btn btn-outline-dark">
+                                    W
+                                </button>
+                            </div>
+                        </div>
+                    </details>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-<form action="{{url('transkacija_post', borza=borza[1])}}" method="post">
-    <table>
-        
-        <tr>
-            <th><label for="kolicina">Kolicina:</label></th>
-            <th><label for="iz_valuta">Vaulta &rarr;</label></th>
-            <th><label for="v_valuto">V vaulto:</label></th>
-            <th><label for="datum">Datum transakcije:</label></th>
-        </tr>
-        <tr>
-            <th>
-                <input id="kolicina" name="kolicina" type="number" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"
-                />
-            </th>
-            <th>
-                <select id="iz_valute" name="iz_valute">
-                    %for valuta in valute:
-                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
-                    %end
-                </select>
-            </th>
-            <th>
-                <select name="v_valuto" id="v_valuto">
-                    %for valuta in valute:
-                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
-                    %end
-                </select>
-            </th>
-            <th>
-                <input type="date" id="datum" name="datum_transakcije"
-                value="{{datum}}"
-                min="2010-01-01" max="{{datum}}">
-                <br>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th><button value='{{borza[0]}}' name='id_borze' type="submit" onclick="myFunction()">Zabeleži transakcijo</button></th>
-        </tr>    
-    </table>
-</form>
-
-
-
-
-<br>
-
-
-
-
-
-
-
-
-<form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
-<details>
-    <summary><b>Depozit</b></summary>
     
-    <table>
-        <tr>
-            <th>Valuta</th>
-            <th>Kolicina</th>
-            <th>Datum</th>
-        </tr>
-        <tr>
-            <th>
-                <select id="valuta" name="valuta">
-                    %for valuta in valute:
-                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
-                    %end
-                </select>
-            </th>
-            <th><input id="kolicina" name="kolicina" type="number" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"/></th>
-            <th>
-                <input type="date" id="datum" name="datum"
-                value="{{datum}}"
-                min="2010-01-01" max="{{datum}}">
-                <br>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th></th>
-            <th><button value="D" name='narocilo' type="submit">D</button></th>
-        </tr>
-
-    </table>
-</details>
-</form>
-
-
-<form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
-
-<details>
-    <summary><b>Withdrawal</b></summary>
-
-    <table>
-        <tr>
-            <th>Valuta</th>
-            <th>Kolicina</th>
-            <th>Datum</th>
-        </tr>
-        <tr>
-            <th>
-                <select id="valuta" name="valuta">
-                    %for valuta in valute:
-                    <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
-                    %end
-                </select>
-            </th>
-            <th><input id="kolicina" name="kolicina" type="number" required
-                oninput="this.setCustomValidity('')"
-                oninvalid="this.setCustomValidity('Obvezno polje')"/></th>
-            <th>
-                <input type="date" id="datum" name="datum"
-                value="{{datum}}"
-                min="2010-01-01" max="{{datum}}">
-                <br>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th></th>
-            <th><button value="W" name='narocilo' type="submit">W</button></th>
-        </tr>
-
-    </table>
-</details>
-</form>
-
+    

@@ -20,7 +20,10 @@
             <div class="row p-2">
                 <div class="col d-flex justify-content-center">
                     <h4 >
-                        Prenesi valuto
+                        Prenesi valuto 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-lg" viewBox="0 0 16 16">
+                            <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"/>
+                        </svg>
                     </h4>
                 </div>
             </div>
@@ -62,7 +65,7 @@
             </div>
             <div class="row p-2">
                 <div class="col d-flex justify-content-center">
-                    <button value='{{borza[0]}}' name='id_borze' type="submit" onclick="myFunction()" class="btn btn-outline-dark">
+                    <button value='{{borza[0]}}' name='id_borze' type="submit" onclick="myFunction()" class="btn btn-outline-light">
                         Zabeleži transakcijo
                     </button>
                 </div>
@@ -84,8 +87,14 @@
             <div class="col d-flex justify-content-center  border border-dark rounded p-3 m-3">
                 <form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
                     <details>
-                        <summary>
-                            <b>Depozit</b>
+                        <summary style="padding: 5mm;">
+                            <b>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
+                                    <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                </svg>
+                                Polog valut
+                            </b>
                         </summary>
                         <div class="row">
                             <div class="col d-flex justify-content-center">
@@ -109,8 +118,8 @@
                                 <input type="date" id="inputGroupSelect03" class="input-group-text" name="datum" value="{{datum}}" min="2010-01-01" max="{{datum}}">
                             </div>
                             <div class="col d-flex justify-content-center">
-                                <button value="D" name='narocilo' type="submit" class="btn btn-outline-dark">
-                                    D
+                                <button value="D" name='narocilo' type="submit" class="btn btn-outline-light">
+                                    Položi
                                 </button>
                             </div>
                         </div>
@@ -122,8 +131,14 @@
                 
                 <form action="{{url('depwith_post', borza_id=borza[0])}}" method="post">
                     <details>
-                        <summary>
-                            <b>Withdrawal</b>
+                        <summary style="padding: 5mm;">
+                            <b>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                </svg>
+                                Dvig valut
+                            </b>
                         </summary>
                         <div class="row">
                             <div class="col d-flex justify-content-center">
@@ -147,8 +162,8 @@
                                 <input type="date" id="inputGroupSelect05" class="input-group-text" name="datum" value="{{datum}}" min="2010-01-01" max="{{datum}}">
                             </div>
                             <div class="col d-flex justify-content-center">
-                                <button value="W" name='narocilo' type="submit" class="btn btn-outline-dark">
-                                    W
+                                <button value="W" name='narocilo' type="submit" class="btn btn-outline-light">
+                                    Dvigni
                                 </button>
                             </div>
                         </div>

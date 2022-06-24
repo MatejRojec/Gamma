@@ -1,6 +1,7 @@
 
 from bottle import *
-from auth_public import *
+from auth import *
+#from auth_public import *
 import hashlib
 from bottleext import *
 from datetime import date    
@@ -16,7 +17,9 @@ RELOADER = os.environ.get('BOTTLE_RELOADER', True)
 DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 
 
- 
+# PRIKLOP NA BAZO
+conn = psycopg2.connect(database=db, host=host, user=user, password=password, port=DB_PORT)
+cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 # Odkomentiraj, če želiš sporočila o napakah
 debug(True)  # za izpise pri razvoju
 
@@ -41,7 +44,7 @@ def preveriUporabnika():
     id_uporabnika = request.get_cookie("id", secret=skrivnost)
     print(id_uporabnika)
     if id_uporabnika:
-        
+        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         oseba = None
         try: 
             cur.execute("SELECT id_uporabnika FROM uporabnik WHERE id_uporabnika = %s", [id_uporabnika])
@@ -88,7 +91,7 @@ def registracija_get():
 
 @post('/registracija')
 def registracija_post():
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     ime = request.forms.get('ime')
     priimek = request.forms.get('priimek')
     spol = request.forms.get('spol')
@@ -145,7 +148,7 @@ def prijava_get():
 
 @post('/prijava') # or @route('/prijava', method='POST')
 def prijava_post():
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     email = request.forms.get('email')
     geslo = request.forms.get('geslo')
     hashBaza = None
@@ -172,7 +175,7 @@ def prijava_post():
 def uporabnik_get():
     id_uporabnika = preveriUporabnika()
     znacka = id_uporabnik()
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         cur.execute('''
         WITH t1 AS (SELECT uporabnik_id,
@@ -248,7 +251,7 @@ def uporabnik_post():
     denarnica = request.forms.get('valuta')
     ime_borze = request.forms.get('ime_borze')
     borza_id = request.forms.get("id_borze")
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute(" SELECT MAX(id_transakcije) FROM transakcija")
     id_transakcije = cur.fetchone()[0] 
     print(id_transakcije)
@@ -292,7 +295,7 @@ def transakcija_get(borza):
     znacka = id_uporabnik()
     today = date.today()
     datum = today.strftime("%Y-%m-%d")
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT id_borze FROM borza WHERE ime = %s", [borza])
     borza_id = cur.fetchone()[0]
 
@@ -309,7 +312,7 @@ def transakcija_get(borza):
 @post('/transakcija/<borza>')
 def transkacija_post(borza):
     id_uporabnika = preveriUporabnika()
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     iz_valute = request.forms.get('iz_valute')
     v_valuto = request.forms.get('v_valuto')
     iz_kolicine = float(request.forms.get('kolicina'))
@@ -384,7 +387,7 @@ def depwith_post(borza_id):
     kolicina = float(request.forms.get('kolicina'))
     datum_narocila = request.forms.get('datum')
     narocilo = request.forms.get('narocilo')
-    
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT ime FROM borza WHERE id_borze = %s", [borza_id])
     borza = cur.fetchone()[0]
     cur.execute("SELECT max(id_transakcije) FROM transakcija")
@@ -474,7 +477,7 @@ def about():
 @get('/borze/')
 def borze():
     znacka =id_uporabnik()
-     
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute("SELECT ime, povezava FROM borza")
     data = cur.fetchall()
     return template("borze.html", naslov='Borze', data=data, znacka=znacka)
@@ -482,7 +485,7 @@ def borze():
 @get('/crypto/')
 def crypto():
     znacka =id_uporabnik()
-     
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute('''
     SELECT * FROM devizni_tecaj
     WHERE osnovna_valuta = 'BTC' and  datum_razmerja between now() - interval '1 week' and now()
@@ -498,12 +501,5 @@ def crypto():
 def odjava():
     response.delete_cookie("id", path='/')
     redirect(url('index'))
-
-
-
-# PRIKLOP NA BAZO
-conn = psycopg2.connect(database=db, host=host, user=user, password=password, port=DB_PORT)
-cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
 
 run(host='localhost', port=SERVER_PORT, reloader=RELOADER)

@@ -133,7 +133,7 @@ def registracija_post():
         INSERT INTO uporabnik (id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
         VALUES  (%s, %s, %s, %s, %s, %s, %s, %s) """,
         [id_uporabnika, ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
-        #conn.commit()
+        conn.commit()
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
@@ -263,7 +263,7 @@ def uporabnik_post():
         VALUES (%s,%s,%s,%s,%s,%s,%s);
         """,
         [id_transakcije, id_uporabnika, borza_id, 0, 0, "USD", "A"])
-        #conn.commit()
+        conn.commit()
         redirect(url('uporabnik_get'))
     else:
         cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
@@ -284,7 +284,7 @@ def uporabnik_post():
             VALUES (%s,%s,%s,%s,%s,%s,%s);
             """,
             [id_transakcije, id_uporabnika, borza_id, 0, 0, denarnica, "A"])
-            #conn.commit()
+            conn.commit()
             redirect(url('uporabnik_get'))
 
 
@@ -339,7 +339,7 @@ def transkacija_post(borza):
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
         """,
         [id_transakcije, id_uporabnika, borza_id,datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
-        #conn.commit()
+        conn.commit()
     elif v_valuto == 'USD': 
         cur.execute("""
         SELECT valutno_razmerje FROM devizni_tecaj
@@ -354,7 +354,7 @@ def transkacija_post(borza):
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
         """,
         [id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
-        #conn.commit()
+        conn.commit()
     else:
         cur.execute("""
         SELECT valutno_razmerje FROM devizni_tecaj
@@ -374,7 +374,7 @@ def transkacija_post(borza):
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
         """,
         [id_transakcije, id_uporabnika, borza_id, datum_transakcije, iz_kolicine, v_kolicino, iz_valute, v_valuto, "T"])
-        #conn.commit()
+        conn.commit()
 
     redirect(url('uporabnik_get'))
 
@@ -399,7 +399,7 @@ def depwith_post(borza_id):
                VALUES (%s,%s,%s,%s,%s,%s,%s,%s);
                """,
                [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, 0, kolicina, valuta, narocilo])
-        #conn.commit()
+        conn.commit()
         redirect(url('uporabnik_get'))
     else:
         cur.execute('''
@@ -463,18 +463,18 @@ def depwith_post(borza_id):
                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);
                    """,
                    [id_transakcije, id_uporabnika, int(borza_id), datum_narocila, kolicina, 0, valuta, valuta, narocilo])
-            #conn.commit()
+            conn.commit()
             redirect(url('uporabnik_get'))
 
 
 
-@get('/about/')
+@get('/about')
 def about():
     znacka =id_uporabnik()
     return template("about.html", naslov='O podjetju', znacka=znacka)
 
 
-@get('/borze/')
+@get('/borze')
 def borze():
     znacka =id_uporabnik()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
@@ -482,7 +482,7 @@ def borze():
     data = cur.fetchall()
     return template("borze.html", naslov='Borze', data=data, znacka=znacka)
 
-@get('/crypto/')
+@get('/crypto')
 def crypto():
     znacka =id_uporabnik()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
@@ -497,7 +497,7 @@ def crypto():
     return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti, znacka=znacka)
 
 
-@get('/odjava/')
+@get('/odjava')
 def odjava():
     response.delete_cookie("id", path='/')
     redirect(url('index'))

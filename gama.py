@@ -51,12 +51,11 @@ def preveriUporabnika():
 
 
 #funkcija za piškotke
-#def id_uporabnik():
-#    if request.get_cookie("id", secret = skrivnost):
-#        piskotek = request.get_cookie("id", secret = skrivnost)
-#        return piskotek
-#    else:
-#        return 0
+def id_uporabnik():
+    if request.get_cookie("id", secret = skrivnost):
+        return 1
+    else:
+        return 0
 
 
 def hashGesla(s):
@@ -71,9 +70,8 @@ def povezi():
 
 @get('/')
 def index():
-    #znacka = id_uporabnik()
-    znacka = 0
-    #print(znacka)
+    znacka = id_uporabnik()
+    print(znacka)
     return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
 
 
@@ -155,7 +153,6 @@ def prijava_post():
     email = request.forms.get('email')
     geslo = request.forms.get('geslo')
     hashBaza = None
-    print("tukiiii")
     try: 
         cur.execute("SELECT geslo FROM uporabnik WHERE email = %s", [email])
         hashBaza = cur.fetchone()[0]
@@ -169,7 +166,6 @@ def prijava_post():
         nastaviSporocilo('Elektronski naslov ali geslo nista ustrezni') 
         redirect(url('prijava_get'))
     
-    print("tki")
     cur.execute('SELECT id_uporabnika FROM uporabnik WHERE email = %s', [email])
     id_uporabnika = cur.fetchone()[0]
     response.set_cookie('id', id_uporabnika, secret=skrivnost)
@@ -179,6 +175,7 @@ def prijava_post():
 @get('/uporabnik')
 def uporabnik_get():
     id_uporabnika = preveriUporabnika()
+    znacka = id_uporabnik()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         cur.execute('''
@@ -248,7 +245,7 @@ def uporabnik_get():
     #data = [] #to bojo podatki o uporabniku: borz denarnice in stanje
     #data = [['BitStamp', 'DenarnicaBTC', 34],['BitStamp', 'DenarnicaETH', 12],['BitStamp', 'DenarnicaUSD', 23400],['Binance', 'DenarnicaBTC', 1],['Binance', 'DenarnicaADA', 12000], ['Coinbase', 'DenarnicaUSD', 100]]
     napaka = nastaviSporocilo()
-    return template('uporabnik.html',aum = aum, data = data , uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka)
+    return template('uporabnik.html',aum = aum, data = data , uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka, znacka=znacka)
 
 
 @post('/uporabnik')
@@ -298,6 +295,7 @@ def uporabnik_post():
 @get('/transakcija/<borza>')
 def transakcija_get(borza):
     id_uporabnika = preveriUporabnika()
+    znacka = id_uporabnik()
     today = date.today()
     datum = today.strftime("%Y-%m-%d")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -312,7 +310,7 @@ def transakcija_get(borza):
     valute = cur.fetchall()
     #valute = [['USD'], ['BTC'], ['ETH']]  
     napaka = nastaviSporocilo()
-    return template("transakcija.html", naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka)
+    return template("transakcija.html", naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka, znacka=znacka)
 
 
 @post('/transakcija/<borza>')
@@ -476,19 +474,22 @@ def depwith_post(borza_id):
 
 @get('/about/')
 def about():
-    return template("about.html", naslov='O podjetju')
+    znacka =id_uporabnik()
+    return template("about.html", naslov='O podjetju', znacka=znacka)
 
 
 @get('/borze/')
 def borze():
+    znacka =id_uporabnik()
     conn = psycopg2.connect(database=db, host=host, user=user, password=password)
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute("SELECT ime, povezava FROM borza")
     data = cur.fetchall()
-    return template("borze.html", naslov='Borze', data=data)
+    return template("borze.html", naslov='Borze', data=data, znacka=znacka)
 
 @get('/crypto/')
 def crypto():
+    znacka =id_uporabnik()
     conn = psycopg2.connect(database=db, host=host, user=user, password=password)
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute('''
@@ -499,7 +500,7 @@ def crypto():
 
     sez = '1.5.2022,2.5.2022,3.5.2022,4.5.2022,5.5.2022,6.5.2022,7.5.2022,8.5.2022,9.5.2022,10.5.2022,11.5.2022,12.5.2022,13.5.2022,14.5.2022,15.5.2022,16.5.2022,17.5.2022,18.5.2022,19.5.2022,20.5.2022'
     vrednosti = '7,8,8,9,9,9,10,11,14,12,7,5,4,6,7,9,10,11,14,12'
-    return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti)
+    return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti, znacka=znacka)
 
 
 @get('/odjava/')

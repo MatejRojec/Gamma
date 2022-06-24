@@ -13,22 +13,29 @@
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
 
-                %znacka = 0
+                
+                %if znacka == 0:
                 <div class="container">
-
                     <a class="navbar-brand" href="{{url('index')}}">
                         <img src="{{url('static', filename= '/img/logo.png')}}" alt="Zacetna stran" width="70" height="70">
                     </a>
                 </div>
-                
                 <a class="navbar-brand" href="{{url('about')}}">O podjetju</a>
                 <a class="navbar-brand" href="{{url('borze')}}">Borze</a>
                 <a class="navbar-brand" href="{{url('crypto')}}">Crypto</a>
-                %if znacka == 0:
                 <a class="navbar-brand" href="{{url('registracija_get')}}">Registracija</a>
                 <a class="navbar-brand" href="{{url('prijava_get')}}">Prijava</a>
                 %end 
+
                 %if znacka != 0:
+                <div class="container">
+                    <a class="navbar-brand" href="{{url('uporabnik_get')}}">
+                        <img src="{{url('static', filename= '/img/logo.png')}}" alt="Zacetna stran" width="70" height="70">
+                    </a>
+                </div>
+                <a class="navbar-brand" href="{{url('about')}}">O podjetju</a>
+                <a class="navbar-brand" href="{{url('borze')}}">Borze</a>
+                <a class="navbar-brand" href="{{url('crypto')}}">Crypto</a>
                 <a class="navbar-brand" href="{{url('uporabnik_get')}}">Moj profil</a>
                 <a class="navbar-brand" href="{{url('odjava')}}">Odjava</a>
                 %end

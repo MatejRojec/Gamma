@@ -131,15 +131,18 @@ def registracija_post():
     zgostitev = hashGesla(geslo)
 
     try:
+        print("tuki1")
+        print([ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
         cur.execute("""
             INSERT INTO uporabnik (ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING id_uporabnika
         """,
         [ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
-        id_uporabnika, = cur.fetchone()
+        id_uporabnika = cur.fetchone()
         print(id_uporabnika)
         conn.commit()
+        print("tuki2")
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
@@ -275,8 +278,7 @@ def uporabnik_post():
     borza_id = request.forms.id_borze
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
-
-    if ime_borze == None:
+    if ime_borze == "":
         cur.execute(""" 
         INSERT INTO transakcija ( uporabnik_id, borza_id, iz_kolicine, v_kolicino, v_valuto, tip_narocila) 
         VALUES (%s,%s,%s,%s,%s,%s);
@@ -286,7 +288,7 @@ def uporabnik_post():
         redirect(url('uporabnik_get'))
     else:
         cur.execute("SELECT id_borze FROM borza WHERE ime = %s ", [ime_borze])
-        borza_id = cur.fetchone()[0]
+        borza_id = cur.fetchone()[0] 
         cur.execute(""" 
         SELECT v_valuto FROM transakcija 
         WHERE uporabnik_id = %s AND borza_id = %s AND v_valuto <> ''

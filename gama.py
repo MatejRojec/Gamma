@@ -74,7 +74,7 @@ def hashGesla(s):
 def index():
     znacka = id_uporabnik()
     print(znacka)
-    return template('zacetna_stran.html', nalosv="Zacetna stran", znacka=znacka)
+    return template('zacetna_stran.html', znacka=znacka)
 
 
 @get("/views/images/<filepath:re:.*\.(jpg|png|gif|ico|svg)>")
@@ -99,14 +99,14 @@ def registracija_get():
 @post('/registracija')
 def registracija_post():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    ime = request.forms.get('ime')
-    priimek = request.forms.get('priimek')
-    spol = request.forms.get('spol')
-    datum_rojstva = request.forms.get('datum_rojstva')
-    drzava = request.forms.get('drzava')
-    email = request.forms.get('email')
-    geslo = request.forms.get('geslo')
-    geslo2 = request.forms.get('geslo2')
+    ime = request.forms.ime
+    priimek = request.forms.priimek
+    spol = request.forms.spol
+    datum_rojstva = request.forms.datum_rojstva
+    drzava = request.forms.drzava
+    email = request.forms.email
+    geslo = request.forms.geslo
+    geslo2 = request.forms.geslo2
 
     try: 
         cur.execute("SELECT * FROM uporabnik WHERE email = %s", [email])
@@ -162,8 +162,9 @@ def prijava_get():
 @post('/prijava')
 def prijava_post():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    email = request.forms.get('email')
-    geslo = request.forms.get('geslo')
+    email = request.forms.email
+    geslo = request.forms.geslo
+    print(geslo, email)
     hashBaza = None
 
     try: 
@@ -269,9 +270,9 @@ def uporabnik_get():
 @post('/uporabnik')
 def uporabnik_post():
     id_uporabnika = preveriUporabnika()
-    denarnica = request.forms.get('valuta')
-    ime_borze = request.forms.get('ime_borze')
-    borza_id = request.forms.get("id_borze")
+    denarnica = request.forms.valuta
+    ime_borze = request.forms.ime_borze
+    borza_id = request.forms.id_borze
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
 
@@ -334,11 +335,11 @@ def transakcija_get(borza):
 def transkacija_post(borza):
     id_uporabnika = preveriUporabnika()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    iz_valute = request.forms.get('iz_valute')
-    v_valuto = request.forms.get('v_valuto')
-    iz_kolicine = float(request.forms.get('kolicina'))
-    datum_transakcije = request.forms.get('datum_transakcije')
-    borza_id = int(request.forms.get('id_borze'))
+    iz_valute = request.forms.iz_valute
+    v_valuto = request.forms.v_valuto
+    iz_kolicine = float(request.forms.kolicina)
+    datum_transakcije = request.forms.datum_transakcije
+    borza_id = int(request.forms.id_borze)
     
 
     if iz_valute==v_valuto: #napaka
@@ -403,10 +404,10 @@ def transkacija_post(borza):
 @post('/depwith/<borza_id>')
 def depwith_post(borza_id):
     id_uporabnika = preveriUporabnika()
-    valuta = request.forms.get('valuta')
-    kolicina = float(request.forms.get('kolicina'))
-    datum_narocila = request.forms.get('datum')
-    narocilo = request.forms.get('narocilo')
+    valuta = request.forms.valuta
+    kolicina = float(request.forms.kolicina)
+    datum_narocila = request.forms.datum
+    narocilo = request.forms.narocilo
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cur.execute("SELECT ime FROM borza WHERE id_borze = %s", [borza_id])
     borza = cur.fetchone()[0]

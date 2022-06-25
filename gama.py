@@ -73,7 +73,6 @@ def hashGesla(s):
 @get('/')
 def index():
     znacka = id_uporabnik()
-    print(znacka)
     return template('zacetna_stran.html', znacka=znacka)
 
 
@@ -131,18 +130,14 @@ def registracija_post():
     zgostitev = hashGesla(geslo)
 
     try:
-        print("tuki1")
-        print([ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
         cur.execute("""
             INSERT INTO uporabnik (ime, priimek, spol, datum_rojstva, drzava, email, geslo) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING id_uporabnika
         """,
         [ime, priimek, spol, datum_rojstva, drzava, email, zgostitev])
-        id_uporabnika = cur.fetchone()
-        print(id_uporabnika)
+        id_uporabnika = cur.fetchone()[0]
         conn.commit()
-        print("tuki2")
     except:
         nastaviSporocilo('Registracija ni možna napačen vnos') 
         redirect(url('registracija_get'))
@@ -167,7 +162,6 @@ def prijava_post():
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     email = request.forms.email
     geslo = request.forms.geslo
-    print(geslo, email)
     hashBaza = None
 
     try: 

@@ -37,8 +37,9 @@ CREATE TABLE transakcija (
 
 
 CREATE TABLE devizni_tecaj (
-    osnovna_valuta TEXT PRIMARY KEY,
-    kotirajoca_valuta TEXT PRIMARY KEY,
+    osnovna_valuta TEXT,
+    kotirajoca_valuta TEXT,
     valutno_razmerje DOUBLE PRECISION NOT NULL,
-    datum_razmerja DATE PRIMARY KEY
+    datum_razmerja DATE,
+    PRIMARY KEY (osnovna_valuta, kotirajoca_valuta, datum_razmerja)
 );

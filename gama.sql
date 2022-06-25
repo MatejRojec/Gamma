@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS borza;
 DROP TABLE IF EXISTS uporabnik;
 
 CREATE TABLE uporabnik (
-    id_uporabnika INTEGER PRIMARY KEY SERIAL,
+    id_uporabnika SERIAL PRIMARY KEY,
     ime TEXT NOT NULL,
     priimek TEXT NOT NULL,  
     spol TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE borza (
 );
 
 CREATE TABLE transakcija (
-    id_transakcije INTEGER PRIMARY KEY SERIAL,
+    id_transakcije SERIAL PRIMARY KEY,
     uporabnik_id INTEGER REFERENCES uporabnik(id_uporabnika),
     borza_id INTEGER REFERENCES borza(id_borze),
     datum_cas TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -37,31 +37,8 @@ CREATE TABLE transakcija (
 
 
 CREATE TABLE devizni_tecaj (
-    osnovna_valuta TEXT,
-    kotirajoca_valuta TEXT,
+    osnovna_valuta TEXT PRIMARY KEY,
+    kotirajoca_valuta TEXT PRIMARY KEY,
     valutno_razmerje DOUBLE PRECISION NOT NULL,
-    datum_razmerja DATE NOT NULL,
-    PRIMARY KEY (osnovna_valuta, kotirajoca_valuta, datum_razmerja)
+    datum_razmerja DATE PRIMARY KEY
 );
-
-
--- na začetku
-GRANT ALL ON DATABASE sem2022_vitor TO rokr WITH GRANT OPTION;
-GRANT ALL ON DATABASE sem2022_vitor TO matejr WITH GRANT OPTION;
-GRANT ALL ON SCHEMA public TO rokr WITH GRANT OPTION;
-GRANT ALL ON SCHEMA public TO matejr WITH GRANT OPTION;
-
-
--- po ustvarjanju tabel
-GRANT ALL ON ALL TABLES IN SCHEMA public TO rokr WITH GRANT OPTION;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO matejr WITH GRANT OPTION;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO rokr WITH GRANT OPTION;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO matejr WITH GRANT OPTION;
-
-
-GRANT CONNECT ON DATABASE sem2022_vitor TO javnost;
-GRANT USAGE ON SCHEMA public TO javnost;
-
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost;
-GRANT INSERT ON uporabnik TO javnost;
-GRANT INSERT ON transakcija TO javnost;

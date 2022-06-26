@@ -1,4 +1,5 @@
 
+from tkinter.tix import Tree
 from bottle import *
 from auth_public import *
 import hashlib
@@ -54,13 +55,13 @@ def preveriUporabnika():
 
 
 # za ločitev med prijavo in odjavo
-def id_uporabnik():
+def preveriZnacko():
     if request.get_cookie("id", secret = skrivnost):
         return 1
     else:
         return 0
 
-# za shranjevanje gesl na  bazi
+# za shranjevanje gesl na bazi
 def hashGesla(s):
     m = hashlib.sha256()
     m.update(s.encode("utf-8"))
@@ -72,7 +73,9 @@ def hashGesla(s):
 ########################################################################################
 @get('/')
 def index():
-    znacka = id_uporabnik()
+    znacka = preveriZnacko()
+    if znacka:
+        redirect(url('uporabnik_get'))
     return template('zacetna_stran.html', znacka=znacka)
 
 
@@ -193,7 +196,7 @@ def prijava_post():
 @get('/uporabnik')
 def uporabnik_get():
     id_uporabnika = preveriUporabnika()
-    znacka = id_uporabnik()
+    znacka = preveriZnacko()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
         cur.execute('''
@@ -311,7 +314,7 @@ def uporabnik_post():
 @get('/transakcija/<borza>')
 def transakcija_get(borza):
     id_uporabnika = preveriUporabnika()
-    znacka = id_uporabnik()
+    znacka = preveriZnacko()
     today = date.today()
     datum = today.strftime("%Y-%m-%d")
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -501,15 +504,58 @@ def odjava():
 # Malo za salo malo za res
 ########################################################################################
 
+@get('/profil')
+def profil_get():
+    id_uporabnika = preveriUporabnika()
+    znacka = preveriZnacko()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute("SELECT ime, priimek, datum_rojstva, spol, drzava, datum_registracije, email FROM uporabnik WHERE id_uporabnika = %s", [id_uporabnika])
+    info = cur.fetchone()
+    napaka = nastaviSporocilo()
+    return template("profil.html",napaka=napaka, znacka=znacka, info=info)
+
+@post('/profil')
+def profil_post():
+    id_uporabnika = preveriUporabnika()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    staro_geslo = request.forms.geslo_staro
+    novo_geslo1 = request.forms.geslo1
+    novo_geslo2 = request.forms.geslo2
+    cur.execute("SELECT geslo FROM uporabnik WHERE id_uporabnika = %s", [id_uporabnika])
+    hash_geslo = cur.fetchone()[0]
+    print(staro_geslo, novo_geslo1, novo_geslo2)
+    print(type(staro_geslo))
+    if hashGesla(staro_geslo) != hash_geslo:
+        nastaviSporocilo('Staro geslo je napačno!')
+        redirect(url('profil_get'))
+    elif len(novo_geslo1) < 4:
+        nastaviSporocilo('Novo geslo mora imeti vsaj 4 znake')
+        redirect(url('profil_get'))
+    elif novo_geslo1 != novo_geslo2:
+        nastaviSporocilo('Gesli se ne ujemata')
+        redirect(url('profil_get'))
+    else:
+        novo_geslo = hashGesla(novo_geslo1)
+        
+        cur.execute("UPDATE uporabnik SET geslo = %s WHERE id_uporabnika = %s", [novo_geslo, id_uporabnika])
+        conn.commit()
+        nastaviSporocilo('Uspesno')
+        redirect(url('profil_get'))
+        
+
+    
+
+
+
 @get('/about')
 def about():
-    znacka =id_uporabnik()
+    znacka = preveriZnacko()
     return template("about.html", naslov='O podjetju', znacka=znacka)
 
 
 @get('/borze')
 def borze():
-    znacka =id_uporabnik()
+    znacka = preveriZnacko()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute("SELECT ime, povezava FROM borza")
     data = cur.fetchall()
@@ -517,7 +563,7 @@ def borze():
 
 @get('/crypto')
 def crypto():
-    znacka =id_uporabnik()
+    znacka = preveriZnacko()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
     cur.execute('''
     SELECT * FROM devizni_tecaj

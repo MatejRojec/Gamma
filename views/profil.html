@@ -1,0 +1,121 @@
+% setdefault('napaka', '')
+% setdefault('naslov', 'Moj profil')
+% setdefault('znacka', 0)
+% rebase('base.html', napaka=napaka, naslov=naslov)
+
+
+
+
+<form action="{{url('profil_post')}}" method="post">
+    <div class="d-flex justify-content-center">
+        <div class="container border border-white rounded p-3 m-3" style="width: 10cm;">
+            <div class="row p-2">
+                <div class="col text-start">
+                    Ime: 
+                </div>
+                <div class="col text-center">
+                    {{info[0]}}
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-start">
+                    Priimek:
+                </div>
+                <div class="col text-center">
+                    {{info[1]}}
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-start">
+                    Datum rojstva:
+                </div>
+                <div class="col text-center">
+                    {{info[2]}}
+                </div>
+            </div>
+            <div class="row p-2">
+
+                <div class="col text-start">
+                    Spol:
+                </div>
+                <div class="col text-center">
+                    {{'Moški' if info[3] == 'M' else 'Ženska'}}
+                </div>
+
+            </div>
+            <div class="row p-2">
+                <div class="col text-start">
+                    Država:
+                </div>
+                <div class="col text-center">
+                    {{info[4]}}
+                </div>
+            </div>
+            <div class="row p-2">
+                <div class="col text-start">
+                    Datum registracije:
+                </div>
+                <div class="col text-center">
+                    {{info[5]}}
+                </div>
+            </div>
+            <div class="row p-2">
+
+                <div class="col text-start">
+                    Email:
+                </div>
+                <div class="col text-center">
+                    {{info[6]}}
+                </div>
+
+            </div>   
+            <div class="row p-2">
+                <details>
+                    <summary>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                        </svg>
+                        Spremeni geslo
+                    </summary>
+                    <div class="row p-2">
+                        <div class="input-group ">
+                            <span class="input-group-text" id="basic-addon1">Staro geslo</span>
+                            <input type="password" class="form-control" name="geslo_staro"
+                            aria-label="Password" 
+                            aria-describedby="basic-addon1" id="validationTooltip01" 
+                            required 
+                            oninput="this.setCustomValidity('')"
+                            oninvalid="this.setCustomValidity('Obvezno polje')">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">Novo geslo</span>
+                            <input type="password" class="form-control" name="geslo1"
+                            aria-label="Password" 
+                            aria-describedby="basic-addon1" id="validationTooltip01" required 
+                            oninput="this.setCustomValidity('')"
+                            oninvalid="this.setCustomValidity('Obvezno polje')">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">Ponovi geslo</span>
+                            <input type="password" class="form-control" name="geslo2"
+                            aria-label="Password" 
+                            aria-describedby="basic-addon1" id="validationTooltip01" required 
+                            oninput="this.setCustomValidity('')"
+                            oninvalid="this.setCustomValidity('Obvezno polje')">
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <button type="submit" class="btn btn-outline-light d-grid gap-2 col-6 mx-auto">
+                            Spremeni
+                        </button>
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    </div>
+</form>

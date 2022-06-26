@@ -19,6 +19,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO javnost;
 GRANT INSERT ON uporabnik TO javnost;
 GRANT INSERT ON transakcija TO javnost;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO javnost;
+GRANT UPDATE ON uporabnik TO javnost;
 
 -- dodatne pravice za uporabo aplikacije
 --GRANT INSERT ON tabela TO javnost;

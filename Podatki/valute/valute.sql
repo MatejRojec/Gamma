@@ -1,0 +1,10 @@
+INSERT INTO valute (valuta) VALUES ('USD');
+INSERT INTO valute (valuta) VALUES ('ADA');
+INSERT INTO valute (valuta) VALUES ('DOT');
+INSERT INTO valute (valuta) VALUES ('XLM');
+INSERT INTO valute (valuta) VALUES ('ETH');
+INSERT INTO valute (valuta) VALUES ('EOS');
+INSERT INTO valute (valuta) VALUES ('BNB');
+INSERT INTO valute (valuta) VALUES ('DOGE');
+INSERT INTO valute (valuta) VALUES ('USDT');
+INSERT INTO valute (valuta) VALUES ('BTC');

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS devizni_tecaj;
 DROP TABLE IF EXISTS transakcija;
+DROP TABLE IF EXISTS valute;
 DROP TABLE IF EXISTS borza;
 DROP TABLE IF EXISTS uporabnik;
 
@@ -23,6 +24,10 @@ CREATE TABLE borza (
     povezava TEXT NOT NULL
 );
 
+CREATE TABLE valute (
+    valuta TEXT PRIMARY KEY
+);
+
 CREATE TABLE transakcija (
     id_transakcije SERIAL PRIMARY KEY,
     uporabnik_id INTEGER REFERENCES uporabnik(id_uporabnika),
@@ -30,15 +35,15 @@ CREATE TABLE transakcija (
     datum_cas TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     iz_kolicine DOUBLE PRECISION,
     v_kolicino DOUBLE PRECISION,
-    iz_valute TEXT,
-    v_valuto TEXT,
+    iz_valute TEXT REFERENCES valute(valuta),
+    v_valuto TEXT REFERENCES valute(valuta),
     tip_narocila TEXT NOT NULL
 );
 
 
 CREATE TABLE devizni_tecaj (
-    osnovna_valuta TEXT,
-    kotirajoca_valuta TEXT,
+    osnovna_valuta TEXT REFERENCES valute(valuta),
+    kotirajoca_valuta TEXT REFERENCES valute(valuta),
     valutno_razmerje DOUBLE PRECISION NOT NULL,
     datum_razmerja DATE,
     PRIMARY KEY (osnovna_valuta, kotirajoca_valuta, datum_razmerja)

@@ -20,15 +20,6 @@ def ustvari_tabele():
 
 ustvari_tabele()
 
-def pobrisi_tabelo(tabela):
-    cur.execute("""
-        DROP TABLE {0};
-    """.format(tabela))
-    conn.commit()
-    print("Uspesno pobrisal tabelo!")
-
-#pobrisi_tabelo("tip_narocila")
-
 
 def uvoziCSV(tabela):
     with open('podatki/{0}'.format(tabela)) as csvfile:
@@ -51,10 +42,6 @@ def uvoziCSV(tabela):
         conn.commit()
         print("Uspesno uvozil csv datoteko!")
 
-#uvoziCSV("borze/borza.csv")
-#uvoziCSV("crypto/crypto.csv")
-
-
 def uvozSQL(tabela):
     with open('podatki/{0}'.format(tabela)) as sqlfile:
         koda = sqlfile.read()
@@ -62,4 +49,9 @@ def uvozSQL(tabela):
     conn.commit()
     print("Uspesno nalozil podatke!")
 
-#uvozSQL("uporabniki/uporabnik.sql")
+uvozSQL("valute/valute.sql")
+uvoziCSV("borze/borza.csv")
+uvoziCSV("crypto/crypto.csv")
+
+
+

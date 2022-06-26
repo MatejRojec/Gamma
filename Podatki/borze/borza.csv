@@ -92,10 +92,9 @@ id_borze,ime,vrsta,lokacija,povezava
 91,Mimo,DeEx,,https://mimo.finance
 92,Swapr (Gnosis),DeEx,,https://swapr.eth.link/#/swap?chainId=100
 93,DFX (Polygon),DeEx,,https://dfx.finance
-94,1inch Liquidity Protocol (Ethereum),DeEx,,https://1inch.io
-95,Tethys Finance,DeEx,,https://tethys.finance/
-96,Morpheus Swap,DeEx,,https://morpheusswap.finance/
-97,DFX (Ethereum),DeEx,,https://dfx.finance
-98,WigoSwap,DeEx,,https://wigoswap.io
-99,SIGEN.pro,CeEx,United Kingdom,https://sigen.pro
-100,Namebase,CeEx,United States,https://www.namebase.io
+94,Tethys Finance,DeEx,,https://tethys.finance/
+95,Morpheus Swap,DeEx,,https://morpheusswap.finance/
+96,DFX (Ethereum),DeEx,,https://dfx.finance
+97,WigoSwap,DeEx,,https://wigoswap.io
+98,SIGEN.pro,CeEx,United Kingdom,https://sigen.pro
+99,Namebase,CeEx,United States,https://www.namebase.io

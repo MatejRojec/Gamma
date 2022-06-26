@@ -1,5 +1,5 @@
 
-#  <img src="https://github.com/MatejRojec/Gamma/blob/main/logo.jpg" width="40" height="40"> 
+#  <img src="https://github.com/MatejRojec/Gamma/blob/static/img/logo.png" width="40" height="40"> 
 
 [![bottle.py](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MatejRojec/Gamma/main?urlpath=proxy/8080/)
 

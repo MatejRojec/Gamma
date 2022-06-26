@@ -250,7 +250,7 @@ def uporabnik_get():
         ORDER BY 2
         ''', [id_uporabnika])
     uporabnik_borze = cur.fetchall()
-    cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta")
+    cur.execute("SELECT osnovna_valuta FROM devizni_tecaj GROUP BY osnovna_valuta ORDER BY 1")
     valute = cur.fetchall()
     cur.execute('''
     WITH t0 AS (SELECT *
@@ -264,7 +264,7 @@ def uporabnik_get():
     aum = cur.fetchone()[0]  
     aum = aum if aum else 0
     napaka = nastaviSporocilo()
-    return template('uporabnik.html',aum = aum, data = data , uporabnik_borze = uporabnik_borze, valute=valute, napaka=napaka, znacka=znacka)
+    return template('uporabnik.html', aum=aum, data=data, uporabnik_borze=uporabnik_borze, valute=valute, napaka=napaka, znacka=znacka)
 
 
 @post('/uporabnik')
@@ -327,7 +327,7 @@ def transakcija_get(borza):
     """, [int(id_uporabnika), int(borza_id)])
     valute = cur.fetchall()
     napaka = nastaviSporocilo()
-    return template("transakcija.html", naslov ="Transakcija", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka, znacka=znacka)
+    return template("transakcija.html", borza=[borza_id, borza], datum=datum, valute=valute, napaka=napaka, znacka=znacka)
 
 
 @post('/transakcija/<borza>')

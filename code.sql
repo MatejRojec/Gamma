@@ -187,12 +187,9 @@ order by 1,2
 
 -- AUM per client
 
-WITH t0 AS (SELECT *
-            FROM transakcija
-            WHERE uporabnik_id = 1)
-
 SELECT SUM(COALESCE(v_kolicino * er2.valutno_razmerje, 0)) - SUM(COALESCE(iz_kolicine * er1.valutno_razmerje, 0)) as client_aum
-FROM t0
+FROM transakcija
          LEFT JOIN devizni_tecaj as er1 on er1.osnovna_valuta = iz_valute and er1.datum_razmerja = datum_cas	
          LEFT JOIN devizni_tecaj as er2 on er2.osnovna_valuta = v_valuto and er2.datum_razmerja = datum_cas	
+         WHERE uporabnik_id = 1
 

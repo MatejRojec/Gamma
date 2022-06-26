@@ -4,14 +4,39 @@
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
 
-Tu bomo imeli malo info o crypto npr.sprememba cen kovancev v nekem obdobju
+<br>
+Izris grafa za {{ime_valute}}
 
 <script
 src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script>
+<form action="{{url('crypto_post')}}" method="post">
+  <div class="row p-4">
+    <div class="d-flex justify-content-center">
+      <select  name="valuta" class="form-select" id="inputGroupSelect01" style="width: auto;">
+        <option value='BTC'></option>
+        %for valuta in valute:
+        <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+        %end
+      </select>
+    </div>
+    <div class="d-flex justify-content-center p-2"> 
+      <div class="mx-auto">
+        <button type="submit" class="btn btn-outline-light">
+          Izriši
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
 
-<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-
+<div class="container border rounded bg-white" style="width: 30cm;">
+  <div class="row justify-content-md-center p-4">
+    <div class="col d-flex justify-content-center">
+      <canvas id="myChart" style="width:100%;max-width:29cm;"></canvas>
+    </div>
+  </div>
+</div>
 
 
 
@@ -26,18 +51,28 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
       data: {
         labels: xValues,
         datasets: [{
-          fill: false,
+          fill: true,
           lineTension: 0,
-          backgroundColor: "rgba(0,0,255,1.0)",
-          borderColor: "rgba(0,0,255,0.1)",
+          backgroundColor: "rgb(19, 135, 171)",
+          borderColor: "black",
           data: yValues
         }]
       },
       options: {
         legend: {display: false},
         scales: {
-          yAxes: [{ticks: {min: 1, max:16}}],
-        }
+        xAxes: [{
+            gridLines: {
+                color: "rgba(0, 0, 0, 0)",
+            }
+        }],
+        yAxes: [{
+            gridLines: {
+                color: "rgba(0, 0, 0, 0)",
+            }   
+        }]
+    }
+
       }
     });
 </script>

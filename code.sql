@@ -171,7 +171,6 @@ WHERE t5.id_borze = 1 AND valuta = 'ADA'
 
 
 -- total Bitcoin price per month
-
 select  EXTRACT(
     YEAR FROM datum_razmerja
     ) AS year
@@ -182,6 +181,7 @@ select  EXTRACT(
  from 	devizni_tecaj
 where osnovna_valuta  = 'BTC'
 and kotirajoca_valuta  = 'USD'
+and datum_razmerja <= date(now())
 group by 1,2
 order by 1,2
 

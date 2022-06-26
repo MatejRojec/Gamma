@@ -557,24 +557,58 @@ def about():
 def borze():
     znacka = preveriZnacko()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
-    cur.execute("SELECT ime, povezava FROM borza")
+    cur.execute("SELECT ime, vrsta, lokacija, povezava FROM borza")
     data = cur.fetchall()
     return template("borze.html", naslov='Borze', data=data, znacka=znacka)
+
+
+def nastaviValuto(valuta = 'BTC'):
+    staro = request.get_cookie("valuta", secret=skrivnost)
+    if valuta is None:
+        response.delete_cookie('valuta', path="/")
+    else:
+        response.set_cookie('valuta', valuta, path="/", secret=skrivnost)
+    return staro
+
 
 @get('/crypto')
 def crypto():
     znacka = preveriZnacko()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
+    ime_valute = nastaviValuto()
+    print('get', ime_valute)
     cur.execute('''
-    SELECT * FROM devizni_tecaj
-    WHERE osnovna_valuta = 'BTC' and  datum_razmerja between now() - interval '1 week' and now()
-    ''')
+    SELECT to_char(datum_razmerja, 'YYYY-MM') as ym, 
+        AVG(valutno_razmerje) as BTC_price
+    FROM devizni_tecaj
+    WHERE osnovna_valuta  = %s
+    AND kotirajoca_valuta  = 'USD'
+    AND datum_razmerja <= date(now())
+    GROUP BY 1
+    ORDER BY 1
+    ''', [ime_valute])
     data = cur.fetchall()
+    sez =[]
+    vrednosti = []
+    for vrstica in data:
+        sez.append(str(vrstica[0]))
+        vrednosti.append(str(vrstica[1]))
+    sez = ','.join(sez)
+    vrednosti = ','.join(vrednosti)
 
-    sez = '1.5.2022,2.5.2022,3.5.2022,4.5.2022,5.5.2022,6.5.2022,7.5.2022,8.5.2022,9.5.2022,10.5.2022,11.5.2022,12.5.2022,13.5.2022,14.5.2022,15.5.2022,16.5.2022,17.5.2022,18.5.2022,19.5.2022,20.5.2022'
-    vrednosti = '7,8,8,9,9,9,10,11,14,12,7,5,4,6,7,9,10,11,14,12'
-    return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti, znacka=znacka)
+    cur.execute("SELECT * FROM valute WHERE valuta <> 'USD' ORDER BY 1 ")
+    valute = cur.fetchall()
 
+    print(sez)
+    return template("crypto.html", naslov='Crypto', sez=sez, vrednosti=vrednosti, znacka=znacka, valute=valute, ime_valute=ime_valute)
+
+
+@post('/crypto')
+def crypto_post():
+    valuta = request.forms.valuta
+    nastaviValuto(valuta=valuta)
+    redirect(url('crypto'))
+    
 
 
 run(host='localhost', port=SERVER_PORT, reloader=RELOADER)

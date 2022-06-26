@@ -5,6 +5,45 @@
 
 Tu bomo imeli malo info o borzah<br>
 
-%for ime, link in data:
-<a href="{{link}}">{{ime}}</a> <br>
-%end
+    <div class="input-group d-flex justify-content-center" style="width: 10cm;">
+        <span class="input-group-text" id="basic-addon1">Najdi borzo</span>
+    </div>
+    
+    <input id="isci" type="text" class="form-control"  oninput="isci()"/>
+    
+    <table id="izpis" class="table table-dark">
+        <tr>
+            <th>Ime</th>
+            <th>Vrsta</th>
+            <th>Lokacija</th>
+        </tr>
+        %for ime, vrsta, lokacija, povezava in data:
+        <tr>
+            <th>{{ime}}</th>
+            <th>{{vrsta}}</th>
+            <th>{{lokacija if lokacija != None else 'Neznano'}}</th>
+        </tr>
+        %end    
+    </table>
+
+
+
+
+
+
+<script>
+    'use strict'
+    function isci() {
+    let vrednost = document.getElementById('isci').value;
+    let tabela = document.getElementById('izpis');
+    [...tabela.rows].forEach(vrstica => {     
+        let vsebina = vrstica.cells[1].innerText  
+        if(vsebina.toLocaleLowerCase().index0f(vrednost.toLocaleLowerCase()) >= 0) {
+            vrstica.style.display = ''
+        } 
+        else {
+            vrstica.style.display = 'none'
+        }
+    })
+    } 
+</script>

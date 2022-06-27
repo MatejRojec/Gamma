@@ -19,11 +19,11 @@
                 <div class="col d-flex justify-content-center">
                     <div class="input-group mb-3" >
                         <label class="input-group-text" for="inputGroupSelect01" >Količina</label>
-                        <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect01" style="width: 5cm;" required
+                        <input type="number" step="0.00001" name="kolicina" class="form-control"  id="inputGroupSelect01" style="width: 4cm;" required
                         oninput="this.setCustomValidity('')"
                         oninvalid="this.setCustomValidity('Obvezno polje')"
                         >
-                        <select  name="iz_valute" class="form-select" id="inputGroupSelect01" style="width: auto;">
+                        <select  name="iz_valute" class="form-select" id="inputGroupSelect01" style="width: 2.5cm;">
                             %for valuta in valute:
                             <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                             %end
@@ -36,7 +36,7 @@
                     </svg>
                 </div>
                 <div class="col d-flex justify-content-center">
-                    <select name="v_valuto" class="form-select" style="width: auto; height: 1cm;">
+                    <select name="v_valuto" class="form-select" style="width: 2.5cm; height: 1cm;">
                         %for valuta in valute:
                         <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
                         %end
@@ -67,8 +67,6 @@
 
 
 
-
-
 <div class="d-flex justify-content-center">
     <div class="container p-3 m-3" style="width: 30cm;">
         <div class="row p-2">
@@ -88,7 +86,7 @@
                             <div class="col d-flex justify-content-center">
                                 <div class="input-group mb-3" >
                                     <label class="input-group-text" for="inputGroupSelect02">Količina</label>
-                                    <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect02" style="width: 5cm;" required
+                                    <input type="number" step="0.00001" name="kolicina" class="form-control"  id="inputGroupSelect02" style="width: 5cm;" required
                                     oninput="this.setCustomValidity('')"
                                     oninvalid="this.setCustomValidity('Obvezno polje')">
                                     <select  name="valuta" class="form-select" id="inputGroupSelect02" style="width: auto;">
@@ -132,7 +130,7 @@
                             <div class="col d-flex justify-content-center">
                                 <div class="input-group mb-3" >
                                     <label class="input-group-text" for="inputGroupSelect04" >Količina</label>
-                                    <input type="number" name="kolicina" class="form-control"  id="inputGroupSelect04" style="width: 5cm;" required
+                                    <input type="number" step="0.00001" name="kolicina" class="form-control"  id="inputGroupSelect04" style="width: 5cm;" required
                                     oninput="this.setCustomValidity('')"
                                     oninvalid="this.setCustomValidity('Obvezno polje')">
                                     <select  name="valuta" class="form-select" id="inputGroupSelect04" style="width: auto;">
@@ -161,4 +159,3 @@
         </div>
     </div>
 </div>
-    

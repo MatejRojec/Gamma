@@ -12,8 +12,6 @@
         </title>
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
-
-                
                 %if znacka == 0:
                 <div class="container">
                     <a class="navbar-brand" href="{{url('index')}}">
@@ -49,10 +47,9 @@
                 </a>
                 %end
             </div>
-          </nav>
-        
+          </nav>        
     </head>
-
+    <!-- Body -->
     <body class="text-white">
         <div
             class="bg-image"
@@ -62,21 +59,18 @@
                 width: 100%;
             ">
             <div style=" text-align: center; padding-bottom: 10cm; padding-top: 2cm;">
-
                 <h2>
                     {{naslov}}
                 </h2>
+
                 % if napaka:
-                <div class="alert alert-danger" style=" margin: auto; width: 30%;" role="alert">
+                <div class="alert alert-{{'success' if napaka == 'Uspešno' else 'danger'}}" style=" margin: auto; width: 30%;" role="alert">
                     {{napaka}}
                 </div>
                 
                 % end
                 {{!base}}
             </div>
-
-
-
 
     <!-- Footer -->
             <footer class="bg-dark text-center text-white">
@@ -134,8 +128,7 @@
                             "You only have to do a few things right in your life so long as you don't do too many things wrong." - Warren Buffett
                         </p>
                     </section>
-                <!-- Section: Text -->
-            
+           
                 <!-- Section: piskotki linki in kontakti -->
                     <section class="mb-4">
                     <!--Grid row-->
@@ -147,7 +140,6 @@
                                     Spletna stran uporablja piškotke za zagotavljanje boljše uporabniške izkušnje in spremljanje statistike obiska. 
                                 </p>
                             </div>
-
                             <div class="col-lg-4 mb-4">
                                 <h5 class="text-uppercase">Povezave</h5>
                                 <ul class="list-unstyled mb-0">
@@ -161,29 +153,22 @@
                                         <a class="text-white" href="{{url('borze')}}">Borze</a>
                                     </li>
                                 </ul>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <h5 class="text-uppercase">Kontakti</h5>
+                                <ul class="list-unstyled mb-0">
+                                    <li>
+                                        <a href="mailto:some@email.com" target="_blank" class="text-white">Gamma@info.si</a>
+                                    </li>
+                                    <li>
+                                        <a href="#!" class="text-white">+386 00 000 000</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-
-                        <!--Grid column-->
-                        <div class="col-lg-4 mb-4">
-                            <h5 class="text-uppercase">Kontakti</h5>
-                            <ul class="list-unstyled mb-0">
-                                <li>
-                                    <a href="mailto:some@email.com" target="_blank" class="text-white">Gamma@info.si</a>
-                                </li>
-                                <li>
-                                    <a href="#!" class="text-white">+386 00 000 000</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!--Grid column-->
-
-                        
-                        <!--Grid column-->
-                        </div>
-                    <!--Grid row-->
                     </section>
                 </div>
-                <!-- Grid container -->
+                
                 <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
                     © 2022 Gamma    
                 </div>

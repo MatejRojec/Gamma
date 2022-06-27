@@ -5,26 +5,31 @@
 
 
 <br>
-Izris grafa za {{ime_valute}}
+Spodaj je izrisan graf za  {{ime_valute}} 
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+</svg>
 
 <script
 src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 </script>
 <form action="{{url('crypto_post')}}" method="post">
-  <div class="row p-4">
-    <div class="d-flex justify-content-center">
-      <select  name="valuta" class="form-select" id="inputGroupSelect01" style="width: auto;">
-        <option value='BTC'></option>
-        %for valuta in valute:
-        <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
-        %end
-      </select>
-    </div>
-    <div class="d-flex justify-content-center p-2"> 
-      <div class="mx-auto">
-        <button type="submit" class="btn btn-outline-light">
-          Izriši
-        </button>
+  <div class="row justify-content-md-center p-4">
+    <div class="col d-flex justify-content-center" style="width: 10cm;">
+      <div class="d-flex justify-content-center">
+        <select  name="valuta" class="form-select" id="inputGroupSelect01" style="width: auto;">
+          <option value='BTC'></option>
+          %for valuta in valute:
+          <option value='{{valuta[0]}}'>{{valuta[0]}}</option>
+          %end
+        </select>
+      </div>
+      <div class="d-flex justify-content-center p-2"> 
+        <div class="mx-auto">
+          <button type="submit" class="btn btn-outline-light">
+            Izriši
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -41,38 +46,45 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 
 <script>
-    var xValues1 = "{{sez}}";
-    var xValues = xValues1.split(",");
-    var yValues1 = "{{vrednosti}}";
-    var yValues = yValues1.split(",");
-    
-    new Chart("myChart", {
-      type: "line",
-      data: {
-        labels: xValues,
-        datasets: [{
-          fill: true,
-          lineTension: 0,
-          backgroundColor: "rgb(19, 135, 171)",
-          borderColor: "black",
-          data: yValues
-        }]
-      },
-      options: {
-        legend: {display: false},
-        scales: {
-        xAxes: [{
-            gridLines: {
-                color: "rgba(0, 0, 0, 0)",
-            }
+  var xValues1 = "{{sez}}";
+  var xValues = xValues1.split(",");
+  var yValues1 = "{{vrednosti}}";
+  var yValues = yValues1.split(",");
+  
+  new Chart("myChart", {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        fill: true,
+        lineTension: 0,
+        backgroundColor: "rgb(19, 135, 171)",
+        borderColor: "black",
+        data: yValues
+      }]
+    },
+    options: {
+      legend: {display: false},
+      scales: {
+      xAxes: [{
+          gridLines: {
+              color: "rgba(0, 0, 0, 0)",
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Datum'
+          }
         }],
-        yAxes: [{
-            gridLines: {
-                color: "rgba(0, 0, 0, 0)",
-            }   
+      yAxes: [{
+          gridLines: {
+              color: "rgba(0, 0, 0, 0)",
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'USD($)'
+          }
         }]
-    }
-
       }
-    });
+    }
+  });
 </script>

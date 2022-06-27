@@ -3,9 +3,6 @@
 % setdefault('znacka', 0)
 % rebase('base.html', napaka=napaka, naslov=naslov)
 
-
-
-
 <form action="{{url('profil_post')}}" method="post">
     <div class="d-flex justify-content-center">
         <div class="container bg-dark border border-white rounded p-3 m-3" style="width: 10cm;">
@@ -34,14 +31,12 @@
                 </div>
             </div>
             <div class="row p-2">
-
                 <div class="col text-start">
                     Spol:
                 </div>
                 <div class="col text-center">
                     {{'Moški' if info[3] == 'M' else 'Ženska'}}
                 </div>
-
             </div>
             <div class="row p-2">
                 <div class="col text-start">
@@ -60,14 +55,12 @@
                 </div>
             </div>
             <div class="row p-2">
-
                 <div class="col text-start">
                     Email:
                 </div>
                 <div class="col text-center">
                     {{info[6]}}
                 </div>
-
             </div>   
             <div class="row p-2">
                 <details>
@@ -114,7 +107,6 @@
                         </button>
                     </div>
                 </details>
-
             </div>
         </div>
     </div>
